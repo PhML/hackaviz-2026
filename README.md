@@ -26,6 +26,8 @@ Cette classification a le mérite de permettre la comparaison mais présente cer
  - Soumise à l'arbitraire de l'interprétation de chaque pays
 
 # Les facettes du bien être
+Bien qu'il soit impossible de chiffrer le bien être, il est néanmoins possible d'approcher cette rélaité par un ensemble de critères subjectifs (note entre 0 et 10) et des moyennes nationales (revenu médian, pourcentage de foyer équipé d'internet, ...)
+Parmi la longue liste de critères :
 - Jeunes sans emploi et sortis du système éducatif
 - Participation électorale
 - Etat de santé perçu comme mauvais
@@ -41,24 +43,30 @@ Cette classification a le mérite de permettre la comparaison mais présente cer
 - Sentiment d’insécurité la nuit
 - Satisfaction à l’égard des relations personnelles inférieure à 5
 - Satisfaction à l’égard de l’emploi du temps inférieure à 5
-- "Satisfaction à l’égard de l’emploi du temps"
-- "Satisfaction à l’égard de la vie inférieure à 5"
-- "Satisfaction à l’égard de la vie"
-- "Satisfaction au travail"
-- "Salariés à temps plein dont la rémunération est inférieure à deux tiers du salaire brut médian"
-- "Salaire brut annuel moyen"
-- "Revenu disponible des ménages inférieur au seuil de pauvreté monétaire relative"
-- "Revenu disponible ajusté net des ménages et des ISBLSM par habitant"
-- "Quintile supérieur de la satisfaction à l’égard de la vie"
-- "Patrimoine net médian"
-- "Ménages vivant dans des logements surpeuplés"
-- "Mortalité routière"
-- "Manque de soutien social"
+- Satisfaction à l’égard de l’emploi du temps
+- Satisfaction à l’égard de la vie inférieure à 5
+- Satisfaction à l’égard de la vie
+- Satisfaction au travail
+- Salariés à temps plein dont la rémunération est inférieure à deux tiers du salaire brut médian
+- Salaire brut annuel moyen
+- Revenu disponible des ménages inférieur au seuil de pauvreté monétaire relative
+- Revenu disponible ajusté net des ménages et des ISBLSM par habitant
+- Quintile supérieur de la satisfaction à l’égard de la vie
+- Patrimoine net médian
+- Ménages vivant dans des logements surpeuplés
+- Mortalité routière
+- Manque de soutien social
+
+# Le contexte
+Afin d'analyser ces données il est nécessaire de disposer de contexte. C'est le role de deux fichiers :
+ - population
+ - pyramide_des_ages
 
 
-
-
-
+# Fichiers additionnels
+Pour aider à la présentation des résultats, sont mis à disposition deux cartes :
+ - ocde.geojson
+ - france.geojson
 
 
 
