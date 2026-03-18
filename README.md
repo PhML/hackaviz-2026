@@ -114,15 +114,18 @@ Une longue liste de 60 critères (**à réorganiser par catégories**) :
 - Mortalité routière
 - Manque de soutien social
 
-# Le contexte
+# La population (nombre et répartition)
 Afin d'analyser ces données il est nécessaire de disposer de contexte. C'est le role de deux fichiers :
  - population totale,  x années x pays <- case blanche possible
  - tranche 65+, tranche <10, pyramide_des_ages x années x pays
- - impots x années x pays
- - PIB, dette, 
- - compte de résultats uniquement la France 
 
-# Fichiers additionnels
+
+# Contexte supplémentaire
+ - impots x années x pays
+ - PIB, dette,
+
+ - 
+# Fichiers additionnels pour cartographie
 Pour aider à la présentation des résultats, sont mis à disposition deux cartes :
  - ocde.geojson
  - france.geojson
@@ -137,7 +140,7 @@ Et sous deux formats physique :
  - xls /csv
  - parquet
 
-
+Pointeur vers -> lire du parquet 
 
 
 
