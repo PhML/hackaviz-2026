@@ -67,10 +67,16 @@ Afin d'analyser ces données il est nécessaire de disposer de contexte. C'est l
 Pour aider à la présentation des résultats, sont mis à disposition deux cartes :
  - ocde.geojson
  - france.geojson
+Rappel du réglement : il est interdit de rajouter des données hormis des fonds de carte.
 
+# Fichiers et formats
+Les données sont fournies sous deux formats logiques :
+ - long : chaque observation est sur plusieurs lignes, une par variable (identifiant, valeur) 
+ - large : une observation est sur une ligne, avec autant de variables/valeurs que de colonnes
 
-
-
+Et sous deux formats physique :
+ - xls /csv
+ - parquet
 
 
 
