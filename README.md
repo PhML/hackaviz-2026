@@ -27,7 +27,23 @@ Cette classification a le mérite de permettre la comparaison mais présente cer
 
 # Les facettes du bien être
 Bien qu'il soit impossible de chiffrer le bien être, il est néanmoins possible d'approcher cette rélaité par un ensemble de critères subjectifs (note entre 0 et 10) et des moyennes nationales (revenu médian, pourcentage de foyer équipé d'internet, ...)
-Une longue liste de 60 critères (**à réorganiser par catégories**) : Logement, Savoirs et compétences, Bien-être subjectif, Revenu et patrimoine, Liens sociaux, Qualité environnementale, Engagement civique, Equilibre travail-vie, Santé, Sécurité, Travail et qualité de l'emploi, 
+
+
+| Thème | Exemples |
+|:--|:--|
+| Logement |  |
+| Savoirs et compétences |  |
+| Revenu et patrimoine |  |
+| Bien-être subjectif,|  |
+| Liens sociaux |  |
+| Qualité environnementale |  |
+| Engagement civique,|  |
+| Equilibre travail-vie|  |
+| Santé |  |
+| Sécurité |  |
+
+Une longue liste de 60 critères (**à réorganiser par catégories**) : 
+
 - Ménage disposant d'un accès internet
 - Ménages vivant dans des logements surpeuplés
 - Accessibilité financière du logement
