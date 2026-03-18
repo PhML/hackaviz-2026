@@ -27,12 +27,53 @@ Cette classification a le mérite de permettre la comparaison mais présente cer
 
 # Les facettes du bien être
 Bien qu'il soit impossible de chiffrer le bien être, il est néanmoins possible d'approcher cette rélaité par un ensemble de critères subjectifs (note entre 0 et 10) et des moyennes nationales (revenu médian, pourcentage de foyer équipé d'internet, ...)
-Parmi la longue liste de critères :
+Une longue liste de 60 critères (**à réorganiser par catégories**) : Logement, Savoirs et compétences, Bien-être subjectif, Revenu et patrimoine, Liens sociaux, Qualité environnementale, Engagement civique, Equilibre travail-vie, Santé, Sécurité, Travail et qualité de l'emploi, 
+- Ménage disposant d'un accès internet
+- Ménages vivant dans des logements surpeuplés
+- Accessibilité financière du logement
+- Décile supérieur des résultats des adultes en calcul
+- Décile supérieur des résultats des adultes en lecture et écriture
+- Décile supérieur des résultats en compréhension de l’écrit
+- Décile supérieur des résultats en mathématiques
+- Décile supérieur des résultats en sciences
+- Adultes ayant de faibles compétences en calcul
+- Faible compétences dans les trois domaines évalués par le PISA
+- Compétences des adultes en calcul
+- Compétences des adultes en lecture et écriture
+- Compétences des élèves en compréhension de l’écrit
+- Compétences des élèves en sciences
+- Compétences des élèves en mathématiques
+- Quintile supérieur de la satisfaction à l’égard de la vie
+- Décile supérieur des ménages les plus riches
+- Accès à des espaces verts
+- Avoir son mot à dire concernant l’action des pouvoirs publics
+- Ne pas avoir son mot à dire concernant l’action des pouvoirs publics
+- Écart entre les genres en termes de temps de travail
+- Longues heures de travail non rémunéré
+- Quintile supérieur de la satisfaction à l’égard de l’emploi du temps
+- Satisfaction à l’égard de la vie
+- Espérance de vie à la naissance
+- Décès dus au suicide, à l’alcool ou à la drogue
+- Homicides
+- Exposition à des températures extrêmes
+- Patrimoine financier liquide équivalent insuffisant pour se maintenir au-dessus du seuil national annuel de pauvreté monétaire relative pendant trois mois
+- Exposition à la pollution de l’air
+- Sentiment de solitude
+- Incapacité à maintenir le logement à bonne température
+- Difficultés à joindre les deux bouts
+- Bilan émotionnel négatif
+- Douleur physique
+- Écart de rémunération entre les genres
+- Décile supérieur de la rémunération des salariés à temps plein
+- Insécurité sur le marché du travail
+- Taux de chômage de longue durée
+- Horaires de travail lourds
 - Jeunes sans emploi et sortis du système éducatif
 - Participation électorale
 - Etat de santé perçu comme mauvais
 - Etat de santé perçu comme bon
 - Écart de rémunération entre les genres
+- Satisfaction au travail
 - Tension au travail
 - Temps libre
 - Temps consacré aux interactions sociales
@@ -40,6 +81,7 @@ Parmi la longue liste de critères :
 - Taux de chômage de longue durée
 - Surcharge financière liée au coût du logement
 - Soutien social
+- Manque de soutien social
 - Sentiment d’insécurité la nuit
 - Satisfaction à l’égard des relations personnelles inférieure à 5
 - Satisfaction à l’égard de l’emploi du temps inférieure à 5
@@ -53,7 +95,6 @@ Parmi la longue liste de critères :
 - Revenu disponible ajusté net des ménages et des ISBLSM par habitant
 - Quintile supérieur de la satisfaction à l’égard de la vie
 - Patrimoine net médian
-- Ménages vivant dans des logements surpeuplés
 - Mortalité routière
 - Manque de soutien social
 
