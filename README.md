@@ -21,3 +21,52 @@ Cette classification a le mérite de permettre la comparaison mais présente cer
  - Ne fait pas de distinction entre le fonctionnement et l'investissement
  - Soumise à l'arbitraire de l'interprétation de chaque pays
 
+# Les facettes du bien être
+- Jeunes sans emploi et sortis du système éducatif
+- Participation électorale
+- Etat de santé perçu comme mauvais
+- Etat de santé perçu comme bon
+- Écart de rémunération entre les genres
+- Tension au travail
+- Temps libre
+- Temps consacré aux interactions sociales
+- Taux d'emploi
+- Taux de chômage de longue durée
+- Surcharge financière liée au coût du logement
+- Soutien social
+- Sentiment d’insécurité la nuit
+- Satisfaction à l’égard des relations personnelles inférieure à 5
+- Satisfaction à l’égard de l’emploi du temps inférieure à 5
+- "Satisfaction à l’égard de l’emploi du temps"
+- "Satisfaction à l’égard de la vie inférieure à 5"
+- "Satisfaction à l’égard de la vie"
+- "Satisfaction au travail"
+- "Salariés à temps plein dont la rémunération est inférieure à deux tiers du salaire brut médian"
+- "Salaire brut annuel moyen"
+- "Revenu disponible des ménages inférieur au seuil de pauvreté monétaire relative"
+- "Revenu disponible ajusté net des ménages et des ISBLSM par habitant"
+- "Quintile supérieur de la satisfaction à l’égard de la vie"
+- "Patrimoine net médian"
+- "Ménages vivant dans des logements surpeuplés"
+- "Mortalité routière"
+- "Manque de soutien social"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
