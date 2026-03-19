@@ -36,11 +36,9 @@ Bien qu'il soit impossible de chiffrer le bien être, il est néanmoins possible
 | Revenu et patrimoine | - Patrimoine net médian <br> - Salaire brut annuel moyen |
 | Bien-être subjectif | - Sentiment de solitude <br>  - Satisfaction à l’égard de la vie |
 | Liens sociaux | - Satisfaction à l’égard des relations personnelles inférieure à 5 <br>  - Manque de soutien social |
-| Qualité environnementale | - Accès à des espaces verts <br> - Exposition à la pollution de l’air
-|
+| Qualité environnementale | - Accès à des espaces verts <br> - Exposition à la pollution de l’air |
 | Engagement civique | - Participation électorale <br> - Ne pas avoir son mot à dire concernant l’action des pouvoirs publics |
-| Equilibre travail-vie | - Quintile supérieur de la satisfaction à l’égard de l’emploi du temps
-<br> - Satisfaction au travail |
+| Equilibre travail-vie | - Quintile supérieur de la satisfaction à l’égard de l’emploi du temps <br> - Satisfaction au travail |
 | Santé | - Espérance de vie à la naissance <br> - Etat de santé perçu comme bon |
 | Sécurité | - Sentiment d’insécurité la nuit <br> - Homicides |
 
