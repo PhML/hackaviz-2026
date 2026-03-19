@@ -97,7 +97,8 @@ Cette édition de l'Hackaviz propose une grande richesse de données dans lesque
 * Il y a beaucoup de fichiers (8) mais cela permet de manière souple d'intégrer ou pas une variable
 
 
-Pointeur vers -> comment lire du parquet 
+
+# Pointeur vers -> comment lire du parquet 
 
 1️⃣ En Python
 Le plus simple est d’utiliser pandas ou pyarrow.
