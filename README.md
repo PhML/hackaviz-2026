@@ -26,7 +26,7 @@ Cette classification a le mérite de permettre la comparaison mais présente cer
  - Soumise à l'arbitraire de l'interprétation de chaque pays
 
 # Les facettes du bien être
-Bien qu'il soit impossible de chiffrer le bien être, il est néanmoins possible d'approcher cette rélaité par un ensemble de critères subjectifs (note entre 0 et 10) et des moyennes nationales (revenu médian, pourcentage de foyer équipé d'internet, ...). Une liste de 60 critères quantitatifs organisés par catégories :
+Bien qu'il soit impossible de chiffrer le bonheur, il est néanmoins possible d'approcher la réalité par un ensemble de critères subjectifs (note entre 0 et 10) et des moyennes nationales (revenu médian, pourcentage de foyer équipé d'internet, ...). Une liste de 60 critères quantitatifs organisés par catégories :  [Source](https://www.oecd.org/fr/data/tools/well-being-data-monitor.html)
 
 
 | Thème | Exemples |
