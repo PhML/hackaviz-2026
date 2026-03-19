@@ -2,9 +2,9 @@
 # Introduction
 Les données de l'Hackackiz 2026 concernent les **budgets des états européens**. Pour mettre tous ces budgets dans une forme "comparable" a été défini la [COFOG](https://en.wikipedia.org/wiki/Classification_of_the_Functions_of_Government) (Classification Of the Fonctions Of Governement) qui ventile les dépenses des administrations publiques selon les objectifs des fonds. Cette classification créée en 1993, révisée en 1999 est issue de l'[OCDE](https://fr.wikipedia.org/wiki/Organisation_de_coop%C3%A9ration_et_de_d%C3%A9veloppement_%C3%A9conomiques) (Organisation de coopération et de dévelopement économique).
 
-L'objectif de ces dépenses étant en premier lieu le **bien être des populations**, nous avons aussi regroupé une liste de critères par pays qui ensemble visent à quantifier le bien être subjectif des individus, ainsi que des critères globaux. 
+L'objectif de ces dépenses étant en premier lieu le **bonheur des populations**, nous avons aussi regroupé une liste de critères par pays qui ensemble visent à quantifier le bien être subjectif des individus, ainsi que des critères globaux. 
 
-Ces deux jeux de données sont disponibles pour les pays de l'OCDE de la zone euro de 2002 à 2025 et pour la France à un niveau de détail plus bas.
+Ces deux jeux de données sont disponibles pour les pays de l'OCDE de la zone euro de 2002 à 2025.
 
 # La classification des dépenses
 | Thème | Exemples |
@@ -18,7 +18,7 @@ Ces deux jeux de données sont disponibles pour les pays de l'OCDE de la zone eu
 | 7-Santé|  Matériels, médicaments, hopitaux, recherche, ...|
 | 8-Sports, culture et religions| Sports, services public de diffusion, culture, ...  |
 | 9-Education | Ecoles, collèges, lycées, universités, services, ...|
-| 10-Protectiion sociale | Maladie, vieilesse, famille, chômage, exclusion, ... |
+| 10-Protection sociale | Maladie, vieilesse, famille, chômage, exclusion, ... |
 
 Cette classification a le mérite de permettre la comparaison mais présente certains défauts qui peuvent entacher les interpretations : 
  - Ambiguité de finalité : certaines dépenses contribuent à plusieurs finalités mais ne sont comptabilisées que dans une
@@ -44,8 +44,6 @@ Bien qu'il soit impossible de chiffrer le bien être, il est néanmoins possible
 
  
 
-
-
 # La population (nombre et répartition)
 Afin d'analyser ces données il est nécessaire de disposer de contexte. C'est le role de deux fichiers :
  - population totale,  x années x pays <- case blanche possible
@@ -58,9 +56,10 @@ Afin d'analyser ces données il est nécessaire de disposer de contexte. C'est l
 
  - 
 # Fichiers additionnels pour cartographie
-Pour aider à la présentation des résultats, sont mis à disposition deux cartes :
+Pour aider à la présentation des résultats sous forme de cartes, sont mis à disposition deux cartes :
  - ocde.geojson
  - france.geojson
+   
 Rappel du réglement : il est interdit de rajouter des données hormis des fonds de carte.
 
 # Fichiers et formats
@@ -72,7 +71,33 @@ Et sous deux formats physique :
  - xls /csv
  - parquet
 
-Pointeur vers -> lire du parquet 
+Vous avez le choix de la combinaison de formats. **Les 4 répertoires suivants contiennent les mêmes données** mais aux formats indiqués :
+ - csv_large
+ - csv_long
+ - parquet_long
+ - xls_large
+
+Chacun de ces répertoires contient les fichiers suivants, avec le suffixe correspondant à son format (csv, xls ou parquet)
+ - depenses_euro
+ - depenses_france
+ - bien_etre
+   
+ - population
+
+ - pyramide_age
+ - pib
+ - dette
+ - impots
+
+# Conseils aux participants de l'édition 2026
+Cette édition de l'Hackaviz propose une grande richesse de données dans lesquelles il ne faut pas se perdre. 
+* Il n'est pas demandé d'utiliser toutes les données
+* Ne perdez pas de temps à examiner toutes les possibilités. Prenez plutôt un angle et creuser le
+* Les dépenses ont 3 dimensions : thème x pays x année
+* Il y a beaucoup de fichiers (8) mais cela permet de manière souple d'intégrer ou pas une variable
+
+
+Pointeur vers -> comment lire du parquet 
 
 
 
