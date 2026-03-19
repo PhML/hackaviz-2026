@@ -31,9 +31,8 @@ Bien qu'il soit impossible de chiffrer le bien être, il est néanmoins possible
 
 | Thème | Exemples |
 |:--|:--|
-| Logement | - Ménages vivant dans des logements surpeuplés 
-- Accessibilité financière du logement |
-| Savoirs et compétences | - Adultes ayant de faibles compétences en calcul - Compétences des élèves en compréhension de l’écrit|
+| Logement | - Ménages vivant dans des logements surpeuplés <br> - Accessibilité financière du logement |
+| Savoirs et compétences | - Adultes ayant de faibles compétences en calcul <br> - Compétences des élèves en compréhension de l’écrit|
 | Revenu et patrimoine | - Patrimoine net médian - Salaire brut annuel moyen |
 | Bien-être subjectif,|  |
 | Liens sociaux |  |
