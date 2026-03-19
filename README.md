@@ -68,23 +68,23 @@ Les données sont fournies sous deux formats logiques :
  - large : une observation est sur une ligne, avec autant de variables/valeurs que de colonnes
 
 Et sous deux formats physique :
- - xls /csv
+ - xls /csv : le désavantage de csv est l'absence de typage des champs
  - parquet
 
 Vous avez le choix de la combinaison de formats. **Les 4 répertoires suivants contiennent les mêmes données** mais aux formats indiqués :
  - csv_large
+ - xls_large
  - csv_long
  - parquet_long
- - xls_large
 
 Chacun de ces répertoires contient les fichiers suivants, avec le suffixe correspondant à son format (csv, xls ou parquet)
  - depenses_euro
  - depenses_france
  - bien_etre
-   
+---   
  - population
-
  - pyramide_age
+---
  - pib
  - dette
  - impots
@@ -99,7 +99,86 @@ Cette édition de l'Hackaviz propose une grande richesse de données dans lesque
 
 Pointeur vers -> comment lire du parquet 
 
+1️⃣ En Python
+Le plus simple est d’utiliser pandas ou pyarrow.
 
+Python
+
+Copier le code
+import pandas as pd
+
+try:
+    # Lecture du fichier Parquet
+    df = pd.read_parquet("mon_fichier.parquet", engine="pyarrow")  
+    print(df.head())  # Aperçu des données
+except FileNotFoundError:
+    print("Erreur : fichier introuvable.")
+except Exception as e:
+    print(f"Erreur lors de la lecture : {e}")
+Notes :
+
+Installez les dépendances :
+Bash
+
+Copier le code
+pip install pandas pyarrow
+engine="pyarrow" est rapide, mais vous pouvez aussi utiliser "fastparquet".
+2️⃣ En JavaScript (navigateur ou Node.js)
+On peut utiliser la librairie hyparquet pour lire un fichier Parquet.
+
+Javascript
+
+Copier le code
+import { ParquetReader } from 'hyparquet';
+
+async function lireParquet(url) {
+    try {
+        const response = await fetch(url);
+        const buffer = await response.arrayBuffer();
+
+        const reader = await ParquetReader.openBuffer(buffer);
+        const cursor = reader.getCursor();
+        let record;
+        while ((record = await cursor.next())) {
+            console.log(record);
+        }
+        await reader.close();
+    } catch (err) {
+        console.error("Erreur lors de la lecture :", err);
+    }
+}
+
+// Exemple d'appel
+lireParquet("https://exemple.com/mon_fichier.parquet");
+Installation :
+
+Bash
+
+Copier le code
+npm install hyparquet
+3️⃣ Dans un outil graphique
+Si vous ne voulez pas coder, vous pouvez ouvrir un fichier Parquet avec :
+
+Apache Drill (requêtes SQL sur fichiers locaux ou distants)
+DuckDB (interface CLI ou intégrée à DBeaver)
+DBeaver (support natif Parquet)
+Microsoft Power BI (import direct)
+Tableau (via connecteur Hyper ou conversion CSV)
+Parquet Viewer (applications gratuites comme Parquet Viewer ou Parquet Tools GUI)
+✅ Conseil :
+Si vous devez manipuler souvent des fichiers Parquet, DuckDB est un excellent compromis :
+
+Sql
+
+Copier le code
+SELECT * FROM 'mon_fichier.parquet' LIMIT 10;
+Il fonctionne en CLI, Python, R, et même JavaScript.
+
+Si tu veux, je peux te préparer un script unique qui lit un Parquet en Python ou JS selon l’environnement automatiquement.
+Veux-tu que je te le fasse ?
+
+
+Annuler
 
 
 
