@@ -31,9 +31,9 @@ Bien qu'il soit impossible de chiffrer le bien être, il est néanmoins possible
 
 | Thème | Exemples |
 |:--|:--|
-| Logement |  |
-| Savoirs et compétences |  |
-| Revenu et patrimoine |  |
+| Logement | - Ménages vivant dans des logements surpeuplés - Accessibilité financière du logement |
+| Savoirs et compétences | - Adultes ayant de faibles compétences en calcul - Compétences des élèves en compréhension de l’écrit|
+| Revenu et patrimoine | - Patrimoine net médian - Salaire brut annuel moyen |
 | Bien-être subjectif,|  |
 | Liens sociaux |  |
 | Qualité environnementale |  |
@@ -45,18 +45,18 @@ Bien qu'il soit impossible de chiffrer le bien être, il est néanmoins possible
 Une longue liste de 60 critères (**à réorganiser par catégories**) : 
 
 - Ménage disposant d'un accès internet
-- Ménages vivant dans des logements surpeuplés
-- Accessibilité financière du logement
+
+
 - Décile supérieur des résultats des adultes en calcul
 - Décile supérieur des résultats des adultes en lecture et écriture
 - Décile supérieur des résultats en compréhension de l’écrit
 - Décile supérieur des résultats en mathématiques
 - Décile supérieur des résultats en sciences
-- Adultes ayant de faibles compétences en calcul
+
 - Faible compétences dans les trois domaines évalués par le PISA
 - Compétences des adultes en calcul
 - Compétences des adultes en lecture et écriture
-- Compétences des élèves en compréhension de l’écrit
+
 - Compétences des élèves en sciences
 - Compétences des élèves en mathématiques
 - Quintile supérieur de la satisfaction à l’égard de la vie
@@ -106,11 +106,11 @@ Une longue liste de 60 critères (**à réorganiser par catégories**) :
 - Satisfaction à l’égard de la vie
 - Satisfaction au travail
 - Salariés à temps plein dont la rémunération est inférieure à deux tiers du salaire brut médian
-- Salaire brut annuel moyen
+
 - Revenu disponible des ménages inférieur au seuil de pauvreté monétaire relative
 - Revenu disponible ajusté net des ménages et des ISBLSM par habitant
 - Quintile supérieur de la satisfaction à l’égard de la vie
-- Patrimoine net médian
+
 - Mortalité routière
 - Manque de soutien social
 
