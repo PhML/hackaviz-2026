@@ -95,6 +95,7 @@ Cette édition de l'Hackaviz propose une grande richesse de données dans lesque
 * Ne perdez pas de temps à examiner toutes les possibilités. Prenez plutôt un angle et creuser le
 * Les dépenses ont 3 dimensions : thème x pays x année
 * Il y a beaucoup de fichiers (8) mais cela permet de manière souple d'intégrer ou pas une variable
+* Le fichier **principal** de cet Hackaviz est le fichier **depenses**, le jury jugera de manière défavorable le fait de ne pas du tout l'utiliser
 
 
 
