@@ -41,24 +41,24 @@ Bien qu'il soit impossible de chiffrer le bonheur, il est néanmoins possible d'
 | Equilibre travail-vie | - Quintile supérieur de la satisfaction à l’égard de l’emploi du temps <br> - Satisfaction au travail |
 | Santé | - Espérance de vie à la naissance <br> - Etat de santé perçu comme bon |
 | Sécurité | - Sentiment d’insécurité la nuit <br> - Homicides |
-
  
 
 # La population (nombre et répartition)
 Afin d'analyser ces données il est nécessaire de disposer de contexte. C'est le role de deux fichiers :
- - population totale,  x années x pays <- case blanche possible
- - tranche 65+, tranche <10, pyramide_des_ages x années x pays
-
+ - population 
+ - pyramide_age 
+par pays x année de 2002 à 2024
 
 # Contexte supplémentaire
- - impots x années x pays
- - PIB, dette,
-
- - 
+Pour ne pas limiter les appétits 3 autres variables ont été ajoutées
+ - pib
+ - impots 
+ - dette
+par pays x années de 2002 à 2024
+   
 # Fichiers additionnels pour cartographie
-Pour aider à la présentation des résultats sous forme de cartes, sont mis à disposition deux cartes :
+Pour aider à la présentation des résultats sous forme de cartes, est mis à disposition une carte :
  - ocde.geojson
- - france.geojson
    
 Rappel du réglement : il est interdit de rajouter des données hormis des fonds de carte.
 
@@ -95,96 +95,7 @@ Cette édition de l'Hackaviz propose une grande richesse de données dans lesque
 * Ne perdez pas de temps à examiner toutes les possibilités. Prenez plutôt un angle et creuser le
 * Les dépenses ont 3 dimensions : thème x pays x année
 * Il y a beaucoup de fichiers (8) mais cela permet de manière souple d'intégrer ou pas une variable
-* Le fichier **principal** de cet Hackaviz est le fichier **depenses**, le jury jugera de manière défavorable le fait de ne pas du tout l'utiliser
-
-
-
-# Pointeur vers -> comment lire du parquet 
-
-1️⃣ En Python
-Le plus simple est d’utiliser pandas ou pyarrow.
-
-Python
-
-Copier le code
-import pandas as pd
-
-try:
-    # Lecture du fichier Parquet
-    df = pd.read_parquet("mon_fichier.parquet", engine="pyarrow")  
-    print(df.head())  # Aperçu des données
-except FileNotFoundError:
-    print("Erreur : fichier introuvable.")
-except Exception as e:
-    print(f"Erreur lors de la lecture : {e}")
-Notes :
-
-Installez les dépendances :
-Bash
-
-Copier le code
-pip install pandas pyarrow
-engine="pyarrow" est rapide, mais vous pouvez aussi utiliser "fastparquet".
-2️⃣ En JavaScript (navigateur ou Node.js)
-On peut utiliser la librairie hyparquet pour lire un fichier Parquet.
-
-Javascript
-
-Copier le code
-import { ParquetReader } from 'hyparquet';
-
-async function lireParquet(url) {
-    try {
-        const response = await fetch(url);
-        const buffer = await response.arrayBuffer();
-
-        const reader = await ParquetReader.openBuffer(buffer);
-        const cursor = reader.getCursor();
-        let record;
-        while ((record = await cursor.next())) {
-            console.log(record);
-        }
-        await reader.close();
-    } catch (err) {
-        console.error("Erreur lors de la lecture :", err);
-    }
-}
-
-// Exemple d'appel
-lireParquet("https://exemple.com/mon_fichier.parquet");
-Installation :
-
-Bash
-
-Copier le code
-npm install hyparquet
-3️⃣ Dans un outil graphique
-Si vous ne voulez pas coder, vous pouvez ouvrir un fichier Parquet avec :
-
-Apache Drill (requêtes SQL sur fichiers locaux ou distants)
-DuckDB (interface CLI ou intégrée à DBeaver)
-DBeaver (support natif Parquet)
-Microsoft Power BI (import direct)
-Tableau (via connecteur Hyper ou conversion CSV)
-Parquet Viewer (applications gratuites comme Parquet Viewer ou Parquet Tools GUI)
-✅ Conseil :
-Si vous devez manipuler souvent des fichiers Parquet, DuckDB est un excellent compromis :
-
-Sql
-
-Copier le code
-SELECT * FROM 'mon_fichier.parquet' LIMIT 10;
-Il fonctionne en CLI, Python, R, et même JavaScript.
-
-Si tu veux, je peux te préparer un script unique qui lit un Parquet en Python ou JS selon l’environnement automatiquement.
-Veux-tu que je te le fasse ?
-
-
-Annuler
-
-
-
-
-
+* ATTENTION : Le fichier **principal** de cet Hackaviz est le fichier **depenses**, le jury jugera de manière défavorable le fait de ne pas du tout l'utiliser
+* Comme d'habitude relisez le règlement avant de vous précipiter sur les données
 
 
