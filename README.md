@@ -46,7 +46,8 @@ Bien qu'il soit impossible de chiffrer le bonheur, il est néanmoins possible d'
 # La population (nombre et répartition)
 Afin d'analyser ces données il est nécessaire de disposer de contexte. C'est le role de deux fichiers :
  - population 
- - pyramide_age 
+ - pyramide_age
+   
 par pays x année de 2002 à 2024
 
 # Contexte supplémentaire
@@ -54,6 +55,7 @@ Pour ne pas limiter les appétits 3 autres variables ont été ajoutées
  - pib
  - impots 
  - dette
+   
 par pays x années de 2002 à 2024
    
 # Fichiers additionnels pour cartographie
