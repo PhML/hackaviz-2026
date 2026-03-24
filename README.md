@@ -4,7 +4,7 @@ Les données de l'Hackackiz 2026 concernent les **budgets des états européens*
 
 L'objectif de ces dépenses étant en premier lieu le **bonheur des populations**, nous avons aussi regroupé une liste de critères par pays qui ensemble visent à quantifier le bien être subjectif des individus, ainsi que des critères globaux. 
 
-Ces deux jeux de données sont disponibles pour les pays de l'OCDE de la zone euro de 2002 à 2025.
+Ces deux jeux de données sont disponibles pour les pays de l'OCDE également membres de la zone euro de 2002 à 2025.
 
 # La classification des dépenses
 | Thème | Exemples |
