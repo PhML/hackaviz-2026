@@ -1,8 +1,8 @@
 # Hackaviz-2026
 # Introduction
-Les données de l'Hackackiz 2026 concernent les **budgets des états européens**. Pour mettre tous ces budgets dans une forme "comparable" a été défini la [COFOG](https://en.wikipedia.org/wiki/Classification_of_the_Functions_of_Government) (Classification Of the Fonctions Of Governement) qui ventile les dépenses des administrations publiques selon les objectifs des fonds. Cette classification créée en 1993, révisée en 1999 est issue de l'[OCDE](https://fr.wikipedia.org/wiki/Organisation_de_coop%C3%A9ration_et_de_d%C3%A9veloppement_%C3%A9conomiques) (Organisation de coopération et de dévelopement économique).
+L'Hackackiz 2026 parle des **budgets des états européens**. Afin de pouvoir comparer les bugdets de ces différents états, ces derniers sont organisés selon une classification comptable, la [COFOG](https://en.wikipedia.org/wiki/Classification_of_the_Functions_of_Government) (Classification Of the Fonctions Of Governement) qui ventile les dépenses des administrations publiques selon les objectifs des fonds. Cette classification créée en 1993, révisée en 1999 est issue de l'[OCDE](https://fr.wikipedia.org/wiki/Organisation_de_coop%C3%A9ration_et_de_d%C3%A9veloppement_%C3%A9conomiques) (Organisation de coopération et de dévelopement économique).
 
-L'objectif de ces dépenses étant en premier lieu le **bien-être des populations**, nous avons aussi regroupé une liste de critères par pays qui, ensemble, visent à quantifier le bien-être subjectif des individus, ainsi que des critères globaux. 
+L'objectif de ces dépenses étant en premier lieu le **bien-être des populations**, nous avons aussi regroupé une liste de critères par pays qui, ensemble, visent à quantifier le bien-être subjectif des individus. 
 
 Ces deux jeux de données sont disponibles pour les pays de l'OCDE également membres de la zone euro de 2002 à 2025.
 
@@ -52,7 +52,7 @@ par pays x année de 2002 à 2024
 
 # Contexte supplémentaire
 Pour ne pas limiter les appétits 3 autres variables ont été ajoutées
- - pib
+ - Produit intérieur brut
  - impots 
  - dette
    
@@ -70,7 +70,7 @@ Les données sont fournies sous deux formats logiques :
  - large : une observation est sur une ligne, avec autant de variables/valeurs que de colonnes
 
 Et sous deux formats physique :
- - xls /csv : le désavantage de csv est l'absence de typage des champs
+ - xls/csv : le désavantage de csv est l'absence de typage des champs
  - parquet
 
 Vous avez le choix de la combinaison de formats. **Les 4 répertoires suivants contiennent les mêmes données** mais aux formats indiqués :
@@ -92,11 +92,12 @@ Chacun de ces répertoires contient les fichiers suivants, avec le suffixe corre
  - impots
 
 # Conseils aux participants de l'édition 2026
+
 Cette édition de l'Hackaviz propose une grande richesse de données dans lesquelles il ne faut pas se perdre. 
-* Il n'est pas demandé d'utiliser toutes les données
-* Ne perdez pas de temps à examiner toutes les possibilités. Prenez plutôt un angle et creuser le
+* Il n'est pas obligatoire d'utiliser toutes les données
+* Ne perdez pas de temps à examiner toutes les possibilités. Prenez plutôt un angle et creusez-le.
 * Les dépenses ont 3 dimensions : thème x pays x année
-* Il y a beaucoup de fichiers (8) mais cela permet de manière souple d'intégrer ou pas une variable
+* Il y a beaucoup de fichiers (8) mais cela permet de manière souple d'intégrer ou non une variable
 * ATTENTION : Le fichier **principal** de cet Hackaviz est le fichier **depenses**, le jury jugera de manière défavorable le fait de ne pas du tout l'utiliser
 * Comme d'habitude relisez le [règlement](https://toulouse-dataviz.fr/hackaviz/reglement/) avant de vous précipiter sur les données
 
