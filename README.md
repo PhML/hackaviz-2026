@@ -65,7 +65,7 @@ par pays x années de 2002 à 2024
    
 # Fichiers additionnels pour cartographie
 Pour aider à la présentation des résultats sous forme de cartes, est mis à disposition une carte au format geojson:
- - ocde.geojson
+ - carte.geojson
    
 Rappel du règlement : il est interdit de rajouter des données hormis des fonds de carte.
 
