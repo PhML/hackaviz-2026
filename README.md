@@ -22,6 +22,8 @@ Ces deux jeux de données sont disponibles pour les pays de l'OCDE également me
 
 [Sources](https://www.oecd.org/fr/publications/panorama-des-administrations-publiques-2025_758a7905-fr/full-report/classification-of-the-functions-of-government-cofog_16aa2337.html)
 
+Sauf indication contraire, les montants monétaires sont les milliard d'euros.
+
 Cette classification a le mérite de permettre la comparaison mais présente certains défauts qui peuvent entacher les interprétations : 
  - Ambiguïté de finalité : certaines dépenses contribuent à plusieurs finalités mais ne sont comptabilisées que dans une
  - Ne fait pas de distinction entre le fonctionnement et l'investissement
