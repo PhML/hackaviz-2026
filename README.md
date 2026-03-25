@@ -4,7 +4,7 @@ L'Hackackiz 2026 parle des **budgets des états européens**. Afin de pouvoir co
 
 L'objectif de ces dépenses étant en premier lieu le **bien-être des populations**, nous avons aussi regroupé une liste de critères par pays qui, ensemble, visent à quantifier le bien-être subjectif des individus. 
 
-Ces deux jeux de données sont disponibles pour les pays de l'OCDE également membres de la zone euro de 2002 à 2025.
+Ces deux jeux de données sont disponibles pour les pays de l'OCDE également membres de la zone euro de 2002 à 2025. Pour ceux qui souhaiteraient aller plus loin, ont été ajouté d'autres variables optionnelles à utiliser ou pas comme : les impôts, la dette ou le produit intérieur brut.
 
 # La classification des dépenses
 | Thème | Exemples |
