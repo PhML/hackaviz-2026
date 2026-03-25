@@ -95,10 +95,10 @@ Chacun de ces répertoires contient les fichiers suivants, avec le suffixe corre
 
 Cette édition de l'Hackaviz propose une grande richesse de données dans lesquelles il ne faut pas se perdre. 
 * Il n'est pas obligatoire d'utiliser toutes les données
-* Ne perdez pas de temps à examiner toutes les possibilités. Prenez plutôt un angle et creusez-le.
-* Les dépenses ont 3 dimensions : thème x pays x année
+* La plupart des fichiers ont 2 dimensions : pays x année voire 3 pour les dépenses : pays x thème x année
 * Il y a beaucoup de fichiers (8) mais cela permet de manière souple d'intégrer ou non une variable
 * ATTENTION : Le fichier **principal** de cet Hackaviz est le fichier **depenses**, le jury jugera de manière défavorable le fait de ne pas du tout l'utiliser
+* Ne perdez pas de temps à examiner toutes les possibilités. Prenez plutôt un angle et creusez-le, quitte à revenir en prendre un autre si besoin.
 * Comme d'habitude relisez le [règlement](https://toulouse-dataviz.fr/hackaviz/reglement/) avant de vous précipiter sur les données
 
 
