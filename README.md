@@ -19,6 +19,7 @@ Ces deux jeux de données sont disponibles pour les pays de l'OCDE également me
 | 8-Sports, culture et religions| Sports, services public de diffusion, culture, ...  |
 | 9-Education | Ecoles, collèges, lycées, universités, services, ...|
 | 10-Protection sociale | Maladie, vieillesse, famille, chômage, exclusion, ... |
+[Sources](https://www.oecd.org/fr/publications/panorama-des-administrations-publiques-2025_758a7905-fr/full-report/classification-of-the-functions-of-government-cofog_16aa2337.html)
 
 Cette classification a le mérite de permettre la comparaison mais présente certains défauts qui peuvent entacher les interprétations : 
  - Ambiguïté de finalité : certaines dépenses contribuent à plusieurs finalités mais ne sont comptabilisées que dans une
