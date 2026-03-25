@@ -26,10 +26,10 @@ Cette classification a le mérite de permettre la comparaison mais présente cer
  - Soumise à l'arbitraire de l'interprétation de chaque pays
 
 # Les facettes du bien être
-Bien qu'il soit impossible de chiffrer le bonheur, il est néanmoins possible d'approcher la réalité par un ensemble de critères subjectifs (note entre 0 et 10) et des moyennes nationales (revenu médian, pourcentage de foyer équipé d'internet, ...). Une liste de 60 critères quantitatifs organisés par catégories :  [Source](https://www.oecd.org/fr/data/tools/well-being-data-monitor.html)
+Bien qu'il soit impossible de chiffrer le bonheur, il est néanmoins possible d'approcher la réalité par un ensemble de critères subjectifs (note entre 0 et 10) et des moyennes nationales (revenu médian, pourcentage de foyer équipé d'internet, ...). Une liste de 60 critères quantitatifs organisés en domaines :  [Source](https://www.oecd.org/fr/data/tools/well-being-data-monitor.html)
 
 
-| Thème | Exemples |
+| Domaine | Exemples |
 |:--|:--|
 | Logement | - Ménages vivant dans des logements surpeuplés <br> - Accessibilité financière du logement |
 | Savoirs et compétences | - Adultes ayant de faibles compétences en calcul <br> - Compétences des élèves en compréhension de l’écrit|
@@ -44,7 +44,7 @@ Bien qu'il soit impossible de chiffrer le bonheur, il est néanmoins possible d'
  
 
 # La population (nombre et répartition)
-Afin d'analyser ces données il est nécessaire de disposer de contexte. C'est le role de deux fichiers :
+Afin d'analyser ces données il est nécessaire de disposer de contexte. C'est le rôle de deux fichiers :
  - population 
  - pyramide_age
    
