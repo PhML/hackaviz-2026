@@ -1,0 +1,21 @@
+html,
+body {
+  margin: 0;
+  padding: 0;
+  background: #111;
+  color: #ddd;
+}
+
+canvas {
+  display: block;
+}
+
+#hud {
+  position: fixed;
+  left: 12px;
+  top: 12px;
+  font: 14px/1.4 system-ui, sans-serif;
+  background: rgba(0, 0, 0, 0.55);
+  padding: 10px 12px;
+  border-radius: 10px;
+}
