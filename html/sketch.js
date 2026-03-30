@@ -1,256 +1,107 @@
 "use strict";
 
-/* =========================
- * Configuration
- * ========================= */
-
-const DATA_URL = "data/test-data.json";
-const BG_COLOR = "#111";
-
-const PIXELS_PER_SECOND = 1500;
-
-// Variable-width rendering
-const MIN_SUBSEGMENT_PX = 10;
-const MAX_SUBSEGMENTS = 40;
-
-/* =========================
- * State
- * ========================= */
+const DATA_URL = "./data/aggregated-data.json";
 
 let dataset = null;
-let segments = [];
+let animationIsStopped = false;
+const CANVAS_SIZE = 600;
 
-let segIndex = 0; // current segment index
-let segT = 0;     // progress in [0..1]
-
-/* =========================
- * p5 lifecycle
- * ========================= */
-
-function setup() {
-  createCanvas(window.innerWidth, window.innerHeight, WEBGL);
-
-  loadJSONData(DATA_URL)
-    .then(data => {
-      dataset = data;
-      segments = buildSegments(dataset);
-      resetAnimation();
-      loop();
-    })
-    .catch(err => {
-      console.error(err);
-      noLoop();
-    });
-}
-
-function draw() {
-  if (!dataset) return;
-
-  background(BG_COLOR);
-  beginTopLeft();
-
-  // draw all completed segments fully (t = 1)
-  for (let i = 0; i < segIndex; i++) {
-    drawVariableWidthSegment(segments[i], 1, i);
-  }
-
-  // draw current segment partially
-  if (segIndex < segments.length) {
-    const s = segments[segIndex];
-
-    segT = advanceProgress(segT, s.len);
-    drawVariableWidthSegment(s, segT, segIndex);
-
-    if (segT >= 1) {
-      segIndex += 1;
-      segT = 0;
-    }
-  } else {
-    noLoop();
-  }
-
-  endTopLeft();
-}
-
-function windowResized() {
-  resizeCanvas(window.innerWidth, window.innerHeight);
-  if (dataset) {
-    segments = buildSegments(dataset);
-    clampAnimationState();
+function loadData(data) {
+  dataset = [];
+  const coordinate_converter = new CoordinateConverter(data["stats"]);
+  for (const [key, value] of Object.entries(data["data"])) {
+    console.log(key, value);
+    dataset.push(new Country(key, value["Année"], value["Impôt"], value["Dépense"], value["Dette"], coordinate_converter))
   }
 }
 
-/* =========================
- * Rendering
- * ========================= */
+async function setup() {
+  let p5Canvas = createCanvas(CANVAS_SIZE, CANVAS_SIZE, WEBGL);
+  p5Canvas.id("main");
+  adjustCanvas("main");
+  await loadJSON(DATA_URL, loadData);
+  // brush.load() initialises the library on the current canvas.
+  // Must be called after createCanvas().
+  brush.load();
 
-/**
- * Draws a segment with variable thickness along its length.
- * Thickness interpolates from previous segment weight → current weight.
- */
-function drawVariableWidthSegment(s, t, index) {
-  const tClamped = clamp01(t);
-  if (tClamped <= 0) return;
-
-  const revealedLen = s.len * tClamped;
-  const steps = computeSubsegmentCount(revealedLen);
-
-  const w0 = getStartWeight(index);
-  const w1 = s.weight;
-
-  for (let i = 0; i < steps; i++) {
-    const a0 = (i / steps) * tClamped;
-    const a1 = ((i + 1) / steps) * tClamped;
-
-    const x0 = s.x1 + s.dx * a0;
-    const y0 = s.y1 + s.dy * a0;
-    const x1 = s.x1 + s.dx * a1;
-    const y1 = s.y1 + s.dy * a1;
-
-    const localT = 0.5 * (a0 + a1);
-    const k = easeOutCubic(localT);
-
-    const w = lerp(w0, w1, k);
-
-    brush.set(s.brush, s.color, w);
-    brush.line(x0, y0, x1, y1);
-  }
+  // brush.scaleBrushes() multiplies the weight and scatter of every
+  // built-in brush by the given factor — handy for high-resolution canvases.
+  brush.scaleBrushes(3.5);
+  background("#fffceb");
+  frameRate(30);
 }
 
-/**
- * Weight at the beginning of a segment:
- * - first segment → its own weight
- * - others → previous segment's weight
- */
-function getStartWeight(index) {
-  if (index <= 0) return segments[0].weight;
-  return segments[index - 1].weight;
+// ── Responsive canvas ────────────────────────────────────────────────────────
+// Fits the canvas to the browser window while preserving its aspect ratio.
+function adjustCanvas(id) {
+  let canvas = document.getElementById(id);
+  canvas.style.maxWidth = "100vw";
+  canvas.style.maxHeight = "100vh";
+  canvas.style.width = "auto";
+  canvas.style.height = "auto";
+  canvas.style.objectFit = "contain";
 }
 
-/* =========================
- * Geometry helpers
- * ========================= */
-
-function beginTopLeft() {
-  push();
+function orient_axes() {
+  // In WEBGL mode the origin is at the canvas centre. Shifting it to the
+  // top-left lets us use the same coordinate system as 2D mode (0,0 = top-left).
+  angleMode(DEGREES)
+  rotate(180, [1, 0, 0])
   translate(-width / 2, -height / 2);
 }
 
-function endTopLeft() {
-  pop();
+
+// ── Draw loop ─────────────────────────────────────────────────────────────────
+function draw() {
+
+  // t advances once per second; scene changes every 5 seconds, cycling 0–5.
+  const time = frameCount / 30;
+
+  orient_axes()
+  brush.set("2B", "#0e2d58", 2);
+  brush.beginShape(0.3);
+  brush.vertex(50, 100);
+  brush.vertex(100, 150, 0.5);
+  brush.vertex(150, 100);
+  brush.vertex(300, 300);
+  brush.endShape(false);
 }
 
-function computeSubsegmentCount(len) {
-  const ideal = Math.ceil(len / MIN_SUBSEGMENT_PX);
-  return clampInt(ideal, 1, MAX_SUBSEGMENTS);
+// Stop/Resume animation on mouseclick
+function mouseClicked() {
+  if (animationIsStopped) {
+    loop();
+  }
+  else {
+    noLoop();
+  }
+  animationIsStopped = !animationIsStopped;
 }
 
-/* =========================
- * Animation helpers
- * ========================= */
-
-function advanceProgress(currentT, segmentLen) {
-  const px = PIXELS_PER_SECOND * (deltaTime / 1000);
-  return currentT + px / segmentLen;
-}
-
-function resetAnimation() {
-  segIndex = 0;
-  segT = 0;
-}
-
-function clampAnimationState() {
-  segIndex = clampInt(segIndex, 0, segments.length);
-  segT = clamp01(segT);
-}
-
-/* =========================
- * Data processing
- * ========================= */
-
-async function loadJSONData(url) {
-  const r = await fetch(url, { cache: "no-store" });
-  if (!r.ok) throw new Error(`Failed to load ${url}`);
-  return r.json();
-}
-
-function buildSegments(data) {
-  const series = Object.entries(data).map(([name, v]) => ({
-    name,
-    dep: v["dépense"],
-    imp: v["impôt"],
-    det: v["dette"],
-  }));
-
-  const allDep = series.flatMap(s => s.dep);
-  const allImp = series.flatMap(s => s.imp);
-  const allDet = series.flatMap(s => s.det);
-
-  const [minDep, maxDep] = extent(allDep);
-  const [minImp, maxImp] = extent(allImp);
-  const [minDet, maxDet] = extent(allDet);
-
-  colorMode(HSB, 360, 100, 100);
-  const colors = {};
-  series.forEach((s, i) => {
-    colors[s.name] = color((i * 360) / series.length, 80, 90);
-  });
-
-  const brushName = brush.box?.()[0] ?? "HB";
-  const margin = 60;
-
-  const out = [];
-
-  for (const s of series) {
-    const n = Math.min(s.dep.length, s.imp.length, s.det.length);
-    for (let i = 0; i < n - 1; i++) {
-      const x1 = map(s.dep[i], minDep, maxDep, margin, width - margin);
-      const y1 = map(s.imp[i], minImp, maxImp, height - margin, margin);
-      const x2 = map(s.dep[i + 1], minDep, maxDep, margin, width - margin);
-      const y2 = map(s.imp[i + 1], minImp, maxImp, height - margin, margin);
-
-      const debt = 0.5 * (s.det[i] + s.det[i + 1]);
-      const w = map(debt, minDet, maxDet, 2, 28);
-
-      const dx = x2 - x1;
-      const dy = y2 - y1;
-      const len = Math.max(1e-6, Math.hypot(dx, dy));
-
-      out.push({
-        x1, y1, x2, y2,
-        dx, dy, len,
-        weight: w,
-        color: colors[s.name],
-        brush: brushName,
-      });
-    }
+class Country {
+  constructor(name, years, taxes, expenses, debts, coordinate_converter) {
+    this.name = name;
+    this.years = years;
+    this.taxes = taxes;
+    this.debts = debts;
+    this.expenses = expenses;
+    this.coordinate_converter = coordinate_converter;
   }
 
-  return out;
-}
-
-/* =========================
- * Math helpers
- * ========================= */
-
-function extent(values) {
-  let min = Infinity, max = -Infinity;
-  for (const v of values) {
-    if (v < min) min = v;
-    if (v > max) max = v;
+  data_to_coordinates(x, y) {
+    return x, y
   }
-  if (!isFinite(min) || min === max) return [0, 1];
-  return [min, max];
 }
 
-function clamp01(x) {
-  return Math.min(1, Math.max(0, x));
-}
-
-function clampInt(x, lo, hi) {
-  return Math.min(hi, Math.max(lo, x | 0));
-}
-
-function easeOutCubic(t) {
-  return 1 - Math.pow(1 - t, 3);
+class CoordinateConverter {
+  constructor(stats) {
+    this.year = stats["Année"];
+    this.tax = stats["impot"];
+    this.expense = stats["dépense"];
+    this.debt = stats["dette"];
+    this.factor = CANVAS_SIZE / max(this.tax[1], this.expense[1]);
+  }
+  convert_to_coordinates(tax, expense) {
+    return tax * this.factor, expense * this.factor
+  }
 }
