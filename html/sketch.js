@@ -8,10 +8,9 @@ const CANVAS_SIZE = 600;
 
 function loadData(data) {
   dataset = [];
-  const coordinate_converter = new CoordinateConverter(data["stats"]);
+  const coordinate_factor = compute_coordinates_factor(data["stats"]);
   for (const [key, value] of Object.entries(data["data"])) {
-    console.log(key, value);
-    dataset.push(new Country(key, value["Année"], value["Impôt"], value["Dépense"], value["Dette"], coordinate_converter))
+    dataset.push(new Country(key, value["Année"], value["Impôt"], value["Dépense"], value["Dette"], coordinate_factor))
   }
 }
 
@@ -58,13 +57,10 @@ function draw() {
   const time = frameCount / 30;
 
   orient_axes()
-  brush.set("2B", "#0e2d58", 2);
-  brush.beginShape(0.3);
-  brush.vertex(50, 100);
-  brush.vertex(100, 150, 0.5);
-  brush.vertex(150, 100);
-  brush.vertex(300, 300);
-  brush.endShape(false);
+  for (let country of dataset) {
+    country.next()
+  }
+
 }
 
 // Stop/Resume animation on mouseclick
@@ -79,29 +75,45 @@ function mouseClicked() {
 }
 
 class Country {
-  constructor(name, years, taxes, expenses, debts, coordinate_converter) {
+  #gen
+
+  constructor(name, years, taxes, expenses, debts, coordinate_factor) {
     this.name = name;
     this.years = years;
     this.taxes = taxes;
     this.debts = debts;
     this.expenses = expenses;
-    this.coordinate_converter = coordinate_converter;
+    this.coordinate_factor = coordinate_factor;
+    this.spline_points = [];
+    this.#gen = this.#iterator();
   }
 
-  data_to_coordinates(x, y) {
-    return x, y
+  *#iterator() {
+    // spline_points must have at leat 2 points, so we initialise with the
+    // first so that on first iteration of the loop there will be two points
+    // (we assume there is at leat 2 points in data)
+    this.spline_points = [[this.coordinate_factor * this.taxes[0], this.coordinate_factor * this.expenses[0], 0.1]];
+    const len = this.taxes.length;
+    for (let i = 1; i < len; i++) {
+      this.spline_points[i] = [this.coordinate_factor * this.taxes[i], this.coordinate_factor * this.expenses[i], 0.1 + i / 10];
+      this.display();
+      yield
+    }
+  }
+
+  next() {
+    return this.#gen.next();
+  }
+
+
+  display() {
+    brush.set("2B", "#0e2d58", 0.2);
+    brush.spline(this.spline_points, 0.5);
   }
 }
 
-class CoordinateConverter {
-  constructor(stats) {
-    this.year = stats["Année"];
-    this.tax = stats["impot"];
-    this.expense = stats["dépense"];
-    this.debt = stats["dette"];
-    this.factor = CANVAS_SIZE / max(this.tax[1], this.expense[1]);
-  }
-  convert_to_coordinates(tax, expense) {
-    return tax * this.factor, expense * this.factor
-  }
+function compute_coordinates_factor(stats) {
+  const tax = stats["impot"];
+  const expense = stats["dépense"];
+  return (CANVAS_SIZE - 10) / max(tax[1], expense[1]);
 }
