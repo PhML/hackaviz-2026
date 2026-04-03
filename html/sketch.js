@@ -9,8 +9,9 @@ const CANVAS_SIZE = 800;
 function loadData(data) {
   dataset = new Europe();
   const coordinate_factor = compute_coordinates_factor(data["stats"]);
+  const debt_configurator = new DebtConfigurator(data["stats"]);
   for (const [key, value] of Object.entries(data["data"])) {
-    dataset.add_country(new Country(key, value["Année"], value["Impôt"], value["Dépense"], value["Dette"], coordinate_factor))
+    dataset.add_country(new Country(key, value["Année"], value["Impôt"], value["Dépense"], value["Dette"], coordinate_factor, debt_configurator))
   }
 }
 
@@ -101,13 +102,14 @@ class Europe {
 class Country {
   #gen
 
-  constructor(name, years, taxes, expenses, debts, coordinate_factor) {
+  constructor(name, years, taxes, expenses, debts, coordinate_factor, debt_configurator) {
     this.name = name;
     this.years = years;
     this.taxes = taxes;
     this.debts = debts;
     this.expenses = expenses;
     this.coordinate_factor = coordinate_factor;
+    this.debt_configurator = debt_configurator;
     this.spline_points = [];
     this.#gen = this.#iterator();
   }
@@ -116,10 +118,10 @@ class Country {
     // spline_points must have at leat 2 points, so we initialise with the
     // first so that on first iteration of the loop there will be two points
     // (we assume there is at leat 2 points in data)
-    this.spline_points = [[this.coordinate_factor * this.taxes[0], this.coordinate_factor * this.expenses[0], 0.1]];
+    this.spline_points = [[this.coordinate_factor * this.taxes[0], this.coordinate_factor * this.expenses[0], this.debt_configurator.convert(this.debts[0])]];
     const len = this.taxes.length;
     for (let i = 1; i < len; i++) {
-      this.spline_points[i] = [this.coordinate_factor * this.taxes[i], this.coordinate_factor * this.expenses[i], 0.1 + i / 10];
+      this.spline_points[i] = [this.coordinate_factor * this.taxes[i], this.coordinate_factor * this.expenses[i], this.debt_configurator.convert(this.debts[i])];
       this.display();
       yield
     }
@@ -143,4 +145,15 @@ function compute_coordinates_factor(stats) {
   const tax = stats["impot"];
   const expense = stats["dépense"];
   return (CANVAS_SIZE - 10) / max(tax[1], expense[1]);
+}
+
+class DebtConfigurator {
+  constructor(stats) {
+    this.min = stats["dette"][0];
+    this.max = stats["dette"][1];
+    this.diff = this.max - this.min;
+  }
+  convert(value) {
+    return 0.2 + 2 * ((value - this.min) / this.diff);
+  }
 }
