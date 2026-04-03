@@ -7,10 +7,10 @@ let animationIsStopped = false;
 const CANVAS_SIZE = 600;
 
 function loadData(data) {
-  dataset = [];
+  dataset = new Europe();
   const coordinate_factor = compute_coordinates_factor(data["stats"]);
   for (const [key, value] of Object.entries(data["data"])) {
-    dataset.push(new Country(key, value["Année"], value["Impôt"], value["Dépense"], value["Dette"], coordinate_factor))
+    dataset.add_country(new Country(key, value["Année"], value["Impôt"], value["Dépense"], value["Dette"], coordinate_factor))
   }
 }
 
@@ -57,9 +57,7 @@ function draw() {
   const time = frameCount / 30;
 
   orient_axes()
-  for (let country of dataset) {
-    country.next()
-  }
+  dataset.next()
 
 }
 
@@ -72,6 +70,32 @@ function mouseClicked() {
     noLoop();
   }
   animationIsStopped = !animationIsStopped;
+}
+
+class Europe {
+  #gen
+  constructor() {
+    this.countries = [];
+    this.#gen = this.#iterator();
+  }
+
+  add_country(country) {
+    this.countries.push(country);
+  }
+
+  *#iterator() {
+    for (const country of this.countries) {
+      yield* country;
+    }
+  }
+
+  next() {
+    return this.#gen.next();
+  }
+
+  [Symbol.iterator]() {
+    return this;
+  }
 }
 
 class Country {
@@ -105,6 +129,9 @@ class Country {
     return this.#gen.next();
   }
 
+  [Symbol.iterator]() {
+    return this;
+  }
 
   display() {
     brush.set("2B", "#0e2d58", 0.2);
