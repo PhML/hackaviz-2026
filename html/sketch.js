@@ -4,7 +4,7 @@ const DATA_URL = "./data/aggregated-data.json";
 
 let dataset = null;
 let animationIsStopped = false;
-const CANVAS_SIZE = 800;
+const CANVAS_SIZE = 1000;
 
 function loadData(data) {
   dataset = new Europe();
