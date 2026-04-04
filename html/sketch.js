@@ -28,7 +28,7 @@ async function setup() {
   // built-in brush by the given factor — handy for high-resolution canvases.
   brush.scaleBrushes(3.5);
   background("#fffceb");
-  frameRate(30);
+  frameRate(3);
 }
 
 // ── Responsive canvas ────────────────────────────────────────────────────────
