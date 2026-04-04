@@ -1,9 +1,12 @@
 "use strict";
 
-const DATA_URL = "./data/aggregated-data.json";
+const DATA_URL = "./data/without-lux.json";
+// const DATA_URL = "./data/aggregated-data.json";
+const GEO_URL = "./data/carte.geojson";
 
 let dataset = null;
 let animationIsStopped = false;
+let geojson = null;
 const CANVAS_SIZE = 1000;
 const palette = [
   "#2c695a", // teal (original, OK)
@@ -29,15 +32,36 @@ function loadData(data) {
   const debt_configurator = new DebtConfigurator(data["stats"]);
   let colorIndex = 0;
   for (const [key, value] of Object.entries(data["data"])) {
-    dataset.add_country(new Country(key, value["Année"], value["Impôt"], value["Dépense"], value["Dette"], coordinate_factor, debt_configurator, palette[colorIndex]))
+    const geometry = get_country_geometry(geojson, value["Cde_Pays"][0]);
+    dataset.add_country(
+      new Country(
+        key,
+        value["Année"],
+        value["Impôt"],
+        value["Dépense"],
+        value["Dette"],
+        coordinate_factor,
+        debt_configurator,
+        palette[colorIndex],
+        geometry),
+    );
     colorIndex++;
   }
+}
+
+function get_country_geometry(geojson, code) {
+  const feature = geojson.features.find(
+    f => f.properties.ISO3 === code
+  );
+  if (!feature) throw new Error("No geometry found for " + code);
+  return feature.geometry;
 }
 
 async function setup() {
   let p5Canvas = createCanvas(CANVAS_SIZE, CANVAS_SIZE, WEBGL);
   p5Canvas.id("main");
   adjustCanvas("main");
+  geojson = await loadJSON(GEO_URL);
   await loadJSON(DATA_URL, loadData);
   // brush.load() initialises the library on the current canvas.
   // Must be called after createCanvas().
@@ -62,23 +86,22 @@ function adjustCanvas(id) {
 }
 
 function orient_axes() {
-  // In WEBGL mode the origin is at the canvas centre. Shifting it to the
-  // top-left lets us use the same coordinate system as 2D mode (0,0 = top-left).
-  angleMode(DEGREES)
-  rotate(180, [1, 0, 0])
-  translate(-width / 2, -height / 2);
+  // In WEBGL mode the origin is at the canvas centre and Y axis goes down.
+  // 1) Repartir d'une matrice propre
+  resetMatrix();
+
+  // 2) Déplacer l'origine au coin bas-gauche
+  translate(-width / 2, height / 2);
+
+  // 3) Inverser l’axe Y (bas → haut)
+  scale(1, -1);
 }
 
 
 // ── Draw loop ─────────────────────────────────────────────────────────────────
 function draw() {
-
-  // t advances once per second; scene changes every 5 seconds, cycling 0–5.
-  const time = frameCount / 30;
-
   orient_axes()
   dataset.next()
-
 }
 
 // Stop/Resume animation on mouseclick
@@ -105,6 +128,7 @@ class Europe {
 
   *#iterator() {
     for (const country of this.countries) {
+      console.log(country.name)
       yield* country;
     }
   }
@@ -121,13 +145,14 @@ class Europe {
 class Country {
   #gen
 
-  constructor(name, years, taxes, expenses, debts, coordinate_factor, debt_configurator, color) {
+  constructor(name, years, taxes, expenses, debts, coordinate_factor, debt_configurator, color, geometry) {
     this.name = name;
     this.years = years;
     this.taxes = taxes;
     this.debts = debts;
     this.expenses = expenses;
     this.color = color;
+    this.geometry = geometry;
     this.coordinate_factor = coordinate_factor;
     this.debt_configurator = debt_configurator;
     this.spline_points = [];
@@ -155,10 +180,44 @@ class Country {
     return this;
   }
 
+  // display() {
+  //   push();
+  //   this.draw_map();
+  //   brush.noFill();
+  //   brush.set("2B", this.color, 0.5);
+  //   brush.spline(this.spline_points, 0.5);
+  //   brush.noStroke();
+  //   pop();
+  // }
+
+
   display() {
-    brush.set("2B", this.color, 0.5);
+    // --- MAP (fill) ---
+    brush.noStroke();
+    // this.draw_map();
+    brush.noFill();
+
+    // --- SPLINE (stroke) ---
+    brush.set("pen", this.color, 0.5);
     brush.spline(this.spline_points, 0.5);
+    brush.noStroke();
   }
+
+  draw_map() {
+    console.log(this.geometry)
+    if (this.geometry.type === "Polygon") {
+      console.log("Polygon")
+      drawPolygon(this.geometry.coordinates, this.color);
+    }
+
+    if (this.geometry.type === "MultiPolygon") {
+      console.log("MultiPolygon")
+      for (const polygon of this.geometry.coordinates) {
+        drawPolygon(polygon, this.color);
+      }
+    }
+  }
+
 }
 
 function compute_coordinates_factor(stats) {
@@ -177,3 +236,41 @@ class DebtConfigurator {
     return 0.2 + 2 * ((value - this.min) / this.diff);
   }
 }
+
+function project(lon, lat, w, h) {
+  const x = map(lon, -180, 180, 0, w);
+  const y = map(lat, 90, -90, 0, h); // inversion Y
+  return [x, y];
+}
+
+function drawPolygon(coords, color) {
+  brush.noStroke();
+  brush.fill(color);
+  brush.beginShape();
+
+  for (const [lon, lat] of coords[0]) {
+    const [x, y] = project(lon, lat, width, height);
+    brush.vertex(x, y);
+  }
+
+  brush.endShape(CLOSE);
+  brush.noFill();
+}
+
+// function drawPolygon(coords, color) {
+//   const ring = coords?.[0];
+//   if (!ring || ring.length < 3) return; // certains multipolygones contiennent de petits anneaux
+//
+//   brush.noStroke();
+//   brush.fill(color, 180);   // <- alpha explicite [1](https://p5-brush.cargo.site/example-2-the-happy-grid)[2](https://github.com/acamposuribe/p5.brush/blob/main/README.md)
+//   brush.beginShape();
+//
+//   for (const c of ring) {
+//     const lon = c[0], lat = c[1];
+//     const [x, y] = project(lon, lat, width, height);
+//     brush.vertex(x, y);
+//   }
+//
+//   brush.endShape(CLOSE);
+//   brush.noFill();           // reset fill (évite les fuites d’état)
+// }
