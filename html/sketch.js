@@ -5,13 +5,32 @@ const DATA_URL = "./data/aggregated-data.json";
 let dataset = null;
 let animationIsStopped = false;
 const CANVAS_SIZE = 1000;
+const palette = [
+  "#2c695a", // teal (original, OK)
+  "#cf022b", // red
+  "#4e93cc", // blue (original, OK)
+  "#b07a00", // dark gold (remplace #ffd300 trop clair)
+  "#2a1449", // deep purple
+  "#008a9b", // cyan/teal
+  "#a14a00", // burnt orange
+  "#0f3d34", // deep teal
+  "#8b1d82", // magenta purple
+  "#1b7fb1", // brighter blue (remplace #7facc6 trop clair)
+  "#d14f3a", // deeper coral (remplace #f6684f un peu trop clair)
+  "#5b2a86", // purple
+  "#006b5f", // teal (remplace #4ad6af trop clair)
+  "#005b9a", // deep blue
+  "#3b3b3b"  // charcoal (utile si tu veux une couleur “neutre” très lisible)
+];
 
 function loadData(data) {
   dataset = new Europe();
   const coordinate_factor = compute_coordinates_factor(data["stats"]);
   const debt_configurator = new DebtConfigurator(data["stats"]);
+  let colorIndex = 0;
   for (const [key, value] of Object.entries(data["data"])) {
-    dataset.add_country(new Country(key, value["Année"], value["Impôt"], value["Dépense"], value["Dette"], coordinate_factor, debt_configurator))
+    dataset.add_country(new Country(key, value["Année"], value["Impôt"], value["Dépense"], value["Dette"], coordinate_factor, debt_configurator, palette[colorIndex]))
+    colorIndex++;
   }
 }
 
@@ -102,12 +121,13 @@ class Europe {
 class Country {
   #gen
 
-  constructor(name, years, taxes, expenses, debts, coordinate_factor, debt_configurator) {
+  constructor(name, years, taxes, expenses, debts, coordinate_factor, debt_configurator, color) {
     this.name = name;
     this.years = years;
     this.taxes = taxes;
     this.debts = debts;
     this.expenses = expenses;
+    this.color = color;
     this.coordinate_factor = coordinate_factor;
     this.debt_configurator = debt_configurator;
     this.spline_points = [];
@@ -136,7 +156,7 @@ class Country {
   }
 
   display() {
-    brush.set("2B", "#0e2d58", 0.2);
+    brush.set("2B", this.color, 0.5);
     brush.spline(this.spline_points, 0.5);
   }
 }
