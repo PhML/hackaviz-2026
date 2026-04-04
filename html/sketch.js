@@ -163,6 +163,11 @@ class Country {
     // spline_points must have at leat 2 points, so we initialise with the
     // first so that on first iteration of the loop there will be two points
     // (we assume there is at leat 2 points in data)
+    push();
+    brush.noStroke();
+    this.draw_map();
+    brush.noFill();
+    pop();
     this.spline_points = [[this.coordinate_factor * this.taxes[0], this.coordinate_factor * this.expenses[0], this.debt_configurator.convert(this.debts[0])]];
     const len = this.taxes.length;
     for (let i = 1; i < len; i++) {
@@ -193,9 +198,6 @@ class Country {
 
   display() {
     // --- MAP (fill) ---
-    brush.noStroke();
-    // this.draw_map();
-    brush.noFill();
 
     // --- SPLINE (stroke) ---
     brush.set("pen", this.color, 0.5);
@@ -238,8 +240,14 @@ class DebtConfigurator {
 }
 
 function project(lon, lat, w, h) {
-  const x = map(lon, -180, 180, 0, w);
-  const y = map(lat, 90, -90, 0, h); // inversion Y
+  // [-11.262923, 35.577542, 33.867139, 70.382178]
+  // const x = map(lon, -11.262923, 35.577542, 0, w);
+  // const y = map(lat, 33.867139, -70.382178, 0, h); // inversion Y
+  const x = map(lon, -11.262923, 33.867139, 0, w);
+  const y = map(lat, 70.382178, 35.577542, 0, h); // inversion Y
+  // const y = map(lat, 35.577542, 70.382178, 0, h); // inversion Y
+  // const x = map(lon, -180, 180, 0, w);
+  // const y = map(lat, 90, -90, 0, h); // inversion Y
   return [x, y];
 }
 
@@ -249,11 +257,15 @@ function drawPolygon(coords, color) {
   brush.beginShape();
 
   for (const [lon, lat] of coords[0]) {
+    // console.log("lon " + lon)
+    // console.log("lat " + lat)
     const [x, y] = project(lon, lat, width, height);
+    // console.log("x " + x)
+    // console.log("y " + y)
     brush.vertex(x, y);
   }
 
-  brush.endShape(CLOSE);
+  brush.endShape(true);
   brush.noFill();
 }
 
