@@ -1,21 +1,26 @@
-html,
+html, body {
+  height: 100%;
+}
+  
 body {
-  margin: 0;
+  overflow: hidden;
   padding: 0;
-  background: #111;
-  color: #ddd;
+  margin: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #000613; /*Raven Storm*/
+}
+  
+#mainCanvas {
+  position: absolute; 
+  z-index: 0; 
+  margin: auto; 
+  top: 0; 
+  left: 0; 
+  background-color: transparent;
 }
 
-canvas {
-  display: block;
-}
-
-#hud {
-  position: fixed;
-  left: 12px;
-  top: 12px;
-  font: 14px/1.4 system-ui, sans-serif;
-  background: rgba(0, 0, 0, 0.55);
-  padding: 10px 12px;
-  border-radius: 10px;
+#p5_loading {
+  display:none;
 }
