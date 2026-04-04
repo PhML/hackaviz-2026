@@ -259,7 +259,8 @@ def _(pl):
 @app.cell
 def _(depense_euro, ordre, pl):
     depense_euro_par_an = (
-        depense_euro.group_by(ordre)
+        depense_euro.filter(pl.col("Pays") != "Luxembourg")
+        .group_by(ordre)
         .agg((pl.col("Montant").alias("Dépense").sum() * 1_000_000_000))
         .sort(ordre)
     )
@@ -270,7 +271,8 @@ def _(depense_euro, ordre, pl):
 def _(ordre, pl):
     impot_euro = pl.scan_parquet("./data/parquet_long/impots.parquet")
     impot_euro_par_an = (
-        impot_euro.group_by(ordre)
+        impot_euro.filter(pl.col("Pays") != "Luxembourg")
+        .group_by(ordre)
         .agg(pl.col("Montant").alias("Impôt").sum() * 1_000_000)
         .sort(ordre)
     )
@@ -282,6 +284,7 @@ def _(ordre, pl):
     dette_euro = pl.scan_parquet("./data/parquet_long/dette.parquet")
     dette_euro_par_an = (
         dette_euro.filter(pl.col("Unité") == "Monnaie nationale")
+        .filter(pl.col("Pays") != "Luxembourg")
         .group_by(ordre)
         .agg(pl.col("Valeur_Mesurée").alias("Dette").sum() * 1_000_000)
         .sort(ordre)
@@ -291,7 +294,7 @@ def _(ordre, pl):
 
 @app.cell
 def _(pl):
-    pop_euro = pl.scan_parquet("./data/parquet_long/population.parquet")
+    pop_euro = pl.scan_parquet("./data/parquet_long/population.parquet").filter(pl.col("Cde_Pays") != "LUX")
     pop_euro_par_an = (
         pop_euro.group_by("Cde_Pays", "Année")
         .agg(pl.col("Total").sum().alias("Population"))
@@ -319,7 +322,8 @@ def _(
             pl.col("Dette") / pl.col("Population"),
         )
         .sort(ordre)
-        .select(pl.exclude(["Cde_Pays", "Population"]))
+        .select(pl.exclude(["Population"]))
+        # .select(pl.exclude(["Cde_Pays", "Population"]))
     )
     euro_joined.collect()
     return (euro_joined,)
@@ -339,7 +343,7 @@ def _(pl):
 @app.cell
 def _(euro_joined, pl):
     (
-        euro_joined.select(pl.exclude("Pays"))
+        euro_joined.select(pl.exclude(["Cde_Pays", "Population"]))
         .select(
             pl.all().min().name.suffix("_min"), pl.all().max().name.suffix("_max")
         )
@@ -355,12 +359,16 @@ def _(euro_joined, pl):
 
 @app.cell
 def _(euro_joined, pl):
-    euro_stats = euro_joined.select(pl.exclude("Pays")).describe().filter(
-        pl.col("statistic").is_in(["min", "max"])
-    ).select(pl.exclude("statistic")).transpose(
-        include_header=True,
-        header_name="variable",
-        column_names=["min", "max"],
+    euro_stats = (
+        euro_joined.select(pl.exclude(["Cde_Pays", "Pays"]))
+        .describe()
+        .filter(pl.col("statistic").is_in(["min", "max"]))
+        .select(pl.exclude("statistic"))
+        .transpose(
+            include_header=True,
+            header_name="variable",
+            column_names=["min", "max"],
+        )
     )
     euro_stats
     return
@@ -368,12 +376,10 @@ def _(euro_joined, pl):
 
 @app.cell
 def _(euro_joined, pl):
-
     metrics = ["Année", "Impôt", "Dépense", "Dette"]
 
     agg = (
-        euro_joined
-        .select(metrics)
+        euro_joined.select(metrics)
         .select(
             pl.all().min().name.suffix("_min"),
             pl.all().max().name.suffix("_max"),
@@ -384,10 +390,10 @@ def _(euro_joined, pl):
     row = agg.row(0, named=True)
 
     result = {
-        "Année":   [int(row["Année_min"]),   int(row["Année_max"])],
-        "impot":   [row["Impôt_min"],        row["Impôt_max"]],
-        "dépense": [row["Dépense_min"],      row["Dépense_max"]],
-        "dette":   [row["Dette_min"],        row["Dette_max"]],
+        "Année": [int(row["Année_min"]), int(row["Année_max"])],
+        "impot": [row["Impôt_min"], row["Impôt_max"]],
+        "dépense": [row["Dépense_min"], row["Dépense_max"]],
+        "dette": [row["Dette_min"], row["Dette_max"]],
     }
     result
     return (result,)
@@ -396,9 +402,9 @@ def _(euro_joined, pl):
 @app.cell
 def _(by, df, pl):
     {
-            name[0]: group.select(pl.exclude(by)).to_dict(as_series=False)
-            for name, group in df.collect().group_by(by, maintain_order=True)
-        }
+        name[0]: group.select(pl.exclude(by)).to_dict(as_series=False)
+        for name, group in df.collect().group_by(by, maintain_order=True)
+    }
     return
 
 
