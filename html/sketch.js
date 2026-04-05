@@ -2,7 +2,7 @@
 
 const DATA_URL = "./data/without-lux.json";
 // const DATA_URL = "./data/aggregated-data.json";
-const GEO_URL = "./data/carte.geojson";
+const GEO_URL = "./data/carte.json";
 
 let dataset = null;
 let animationIsStopped = false;
@@ -208,12 +208,10 @@ class Country {
   draw_map() {
     console.log(this.geometry)
     if (this.geometry.type === "Polygon") {
-      console.log("Polygon")
       drawPolygon(this.geometry.coordinates, this.color);
     }
 
     if (this.geometry.type === "MultiPolygon") {
-      console.log("MultiPolygon")
       for (const polygon of this.geometry.coordinates) {
         drawPolygon(polygon, this.color);
       }
@@ -239,22 +237,57 @@ class DebtConfigurator {
   }
 }
 
-function drawPolygon(polygon) {
+/* =========================
+   POLYGON (rings)
+   ========================= */
+
+function drawPolygon(polygon, color) {
+  brush.set("pen", color);
+  brush.strokeWeight(0.8);
   for (const ring of polygon) {
-    beginShape();
-    for (const [lon, lat] of ring) {
-      const p = project(lon, lat);
-      vertex(p.x, p.y);
+    brush.beginStroke("segments");
+    for (let i = 1; i < ring.length; i++) {
+      const a = project(ring[i - 1][0], ring[i - 1][1]);
+      const b = project(ring[i][0], ring[i][1]);
+      brush.line(a.x, a.y, b.x, b.y);
     }
-    endShape();
+    brush.endStroke();
   }
 }
 
+/* =========================
+   PROJECTION (simple Europe)
+   ========================= */
+
 function project(lon, lat) {
-  const x = map(lon, -25, 45, 0, width);
-  const y = map(lat, 72, 34, height, 0); // inversion
-  return createVector(x, y);
+  return {
+    x: map(lon, -25, 45, 40, width - 40),
+    y: map(lat, 72, 34, height - 40, 40)
+  };
 }
+
+// function drawPolygon(polygon, color) {
+//   brush.noStroke();
+//   brush.fill(color);
+//   for (const ring of polygon) {
+//     brush.beginStroke();
+//     for (const [lon, lat] of ring) {
+//       const p = project(lon, lat);
+//       brush.line(p.x, p.y);
+//     }
+//     brush.endStroke();
+//   }
+// }
+//
+// function project(lon, lat) {
+//   const x = map(lon, -25, 45, 0, width);
+//   const y = map(lat, 72, 34, height, 0); // inversion
+//   return createVector(x, y);
+// }
+//
+//
+//
+//
 // function project(lon, lat, w, h) {
 //   // [-11.262923, 35.577542, 33.867139, 70.382178]
 //   // const x = map(lon, -11.262923, 35.577542, 0, w);
