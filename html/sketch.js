@@ -239,35 +239,51 @@ class DebtConfigurator {
   }
 }
 
-function project(lon, lat, w, h) {
-  // [-11.262923, 35.577542, 33.867139, 70.382178]
-  // const x = map(lon, -11.262923, 35.577542, 0, w);
-  // const y = map(lat, 33.867139, -70.382178, 0, h); // inversion Y
-  const x = map(lon, -11.262923, 33.867139, 0, w);
-  const y = map(lat, 70.382178, 35.577542, 0, h); // inversion Y
-  // const y = map(lat, 35.577542, 70.382178, 0, h); // inversion Y
-  // const x = map(lon, -180, 180, 0, w);
-  // const y = map(lat, 90, -90, 0, h); // inversion Y
-  return [x, y];
-}
-
-function drawPolygon(coords, color) {
-  brush.noStroke();
-  brush.fill(color);
-  brush.beginShape();
-
-  for (const [lon, lat] of coords[0]) {
-    // console.log("lon " + lon)
-    // console.log("lat " + lat)
-    const [x, y] = project(lon, lat, width, height);
-    // console.log("x " + x)
-    // console.log("y " + y)
-    brush.vertex(x, y);
+function drawPolygon(polygon) {
+  for (const ring of polygon) {
+    beginShape();
+    for (const [lon, lat] of ring) {
+      const p = project(lon, lat);
+      vertex(p.x, p.y);
+    }
+    endShape();
   }
-
-  brush.endShape(true);
-  brush.noFill();
 }
+
+function project(lon, lat) {
+  const x = map(lon, -25, 45, 0, width);
+  const y = map(lat, 72, 34, height, 0); // inversion
+  return createVector(x, y);
+}
+// function project(lon, lat, w, h) {
+//   // [-11.262923, 35.577542, 33.867139, 70.382178]
+//   // const x = map(lon, -11.262923, 35.577542, 0, w);
+//   // const y = map(lat, 33.867139, -70.382178, 0, h); // inversion Y
+//   const x = map(lon, -11.262923, 33.867139, 0, w);
+//   const y = map(lat, 70.382178, 35.577542, 0, h); // inversion Y
+//   // const y = map(lat, 35.577542, 70.382178, 0, h); // inversion Y
+//   // const x = map(lon, -180, 180, 0, w);
+//   // const y = map(lat, 90, -90, 0, h); // inversion Y
+//   return [x, y];
+// }
+
+// function drawPolygon(coords, color) {
+//   brush.noStroke();
+//   brush.fill(color);
+//   brush.beginShape();
+//
+//   for (const [lon, lat] of coords[0]) {
+//     // console.log("lon " + lon)
+//     // console.log("lat " + lat)
+//     const [x, y] = project(lon, lat, width, height);
+//     // console.log("x " + x)
+//     // console.log("y " + y)
+//     brush.vertex(x, y);
+//   }
+//
+//   brush.endShape(true);
+//   brush.noFill();
+// }
 
 // function drawPolygon(coords, color) {
 //   const ring = coords?.[0];
