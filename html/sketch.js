@@ -7,44 +7,67 @@ const GEO_URL = "./data/carte.json";
 let dataset = null;
 let animationIsStopped = false;
 let geojson = null;
+
 const CANVAS_SIZE = 1000;
+const MAP_WIDTH = 900;
+const MAP_HEIGHT = 700;
+
+let map_layer = null;
+
 const palette = [
-  "#2c695a", // teal (original, OK)
-  "#cf022b", // red
-  "#4e93cc", // blue (original, OK)
-  "#b07a00", // dark gold (remplace #ffd300 trop clair)
-  "#2a1449", // deep purple
-  "#008a9b", // cyan/teal
-  "#a14a00", // burnt orange
-  "#0f3d34", // deep teal
-  "#8b1d82", // magenta purple
-  "#1b7fb1", // brighter blue (remplace #7facc6 trop clair)
-  "#d14f3a", // deeper coral (remplace #f6684f un peu trop clair)
-  "#5b2a86", // purple
-  "#006b5f", // teal (remplace #4ad6af trop clair)
-  "#005b9a", // deep blue
-  "#3b3b3b"  // charcoal (utile si tu veux une couleur “neutre” très lisible)
+  "#2c695a", "#cf022b", "#4e93cc", "#b07a00", "#2a1449",
+  "#008a9b", "#a14a00", "#0f3d34", "#8b1d82", "#1b7fb1",
+  "#d14f3a", "#5b2a86", "#006b5f", "#005b9a", "#3b3b3b"
 ];
+
+async function setup() {
+  const p5Canvas = createCanvas(CANVAS_SIZE, CANVAS_SIZE, WEBGL);
+  p5Canvas.id("main");
+  adjustCanvas("main");
+
+  map_layer = createGraphics(MAP_WIDTH, MAP_HEIGHT);
+  map_layer.pixelDensity(1);
+  map_layer.noFill();
+  map_layer.strokeWeight(0.8);
+
+  geojson = await loadJSON(GEO_URL);
+  await loadJSON(DATA_URL, loadData);
+
+  brush.load();
+  brush.scaleBrushes(3.5);
+
+  background("#fffceb");
+  frameRate(3);
+}
 
 function loadData(data) {
   dataset = new Europe();
-  const coordinate_factor = compute_coordinates_factor(data["stats"]);
-  const debt_configurator = new DebtConfigurator(data["stats"]);
+
+  const coordinate_factor = compute_coordinates_factor(data.stats);
+  const debt_configurator = new DebtConfigurator(data.stats);
+
   let colorIndex = 0;
-  for (const [key, value] of Object.entries(data["data"])) {
-    const geometry = get_country_geometry(geojson, value["Cde_Pays"][0]);
+
+  for (const [key, value] of Object.entries(data.data)) {
+    const geometry = get_country_geometry(
+      geojson,
+      value.Cde_Pays[0]
+    );
+
     dataset.add_country(
       new Country(
         key,
-        value["Année"],
-        value["Impôt"],
-        value["Dépense"],
-        value["Dette"],
+        value.Année,
+        value.Impôt,
+        value.Dépense,
+        value.Dette,
         coordinate_factor,
         debt_configurator,
         palette[colorIndex],
-        geometry),
+        geometry
+      )
     );
+
     colorIndex++;
   }
 }
@@ -57,27 +80,21 @@ function get_country_geometry(geojson, code) {
   return feature.geometry;
 }
 
-async function setup() {
-  let p5Canvas = createCanvas(CANVAS_SIZE, CANVAS_SIZE, WEBGL);
-  p5Canvas.id("main");
-  adjustCanvas("main");
-  geojson = await loadJSON(GEO_URL);
-  await loadJSON(DATA_URL, loadData);
-  // brush.load() initialises the library on the current canvas.
-  // Must be called after createCanvas().
-  brush.load();
-
-  // brush.scaleBrushes() multiplies the weight and scatter of every
-  // built-in brush by the given factor — handy for high-resolution canvases.
-  brush.scaleBrushes(3.5);
-  background("#fffceb");
-  frameRate(3);
+function draw() {
+  resetMatrix();
+  translate(-width / 2, -height / 2);
+  image(map_layer, 0, 0);
+  orient_axes();
+  dataset.next();
 }
 
-// ── Responsive canvas ────────────────────────────────────────────────────────
-// Fits the canvas to the browser window while preserving its aspect ratio.
+function mouseClicked() {
+  animationIsStopped ? loop() : noLoop();
+  animationIsStopped = !animationIsStopped;
+}
+
 function adjustCanvas(id) {
-  let canvas = document.getElementById(id);
+  const canvas = document.getElementById(id);
   canvas.style.maxWidth = "100vw";
   canvas.style.maxHeight = "100vh";
   canvas.style.width = "auto";
@@ -86,37 +103,14 @@ function adjustCanvas(id) {
 }
 
 function orient_axes() {
-  // In WEBGL mode the origin is at the canvas centre and Y axis goes down.
-  // 1) Repartir d'une matrice propre
   resetMatrix();
-
-  // 2) Déplacer l'origine au coin bas-gauche
   translate(-width / 2, height / 2);
-
-  // 3) Inverser l’axe Y (bas → haut)
   scale(1, -1);
 }
 
-
-// ── Draw loop ─────────────────────────────────────────────────────────────────
-function draw() {
-  orient_axes()
-  dataset.next()
-}
-
-// Stop/Resume animation on mouseclick
-function mouseClicked() {
-  if (animationIsStopped) {
-    loop();
-  }
-  else {
-    noLoop();
-  }
-  animationIsStopped = !animationIsStopped;
-}
-
 class Europe {
-  #gen
+  #gen;
+
   constructor() {
     this.countries = [];
     this.#gen = this.#iterator();
@@ -128,7 +122,6 @@ class Europe {
 
   *#iterator() {
     for (const country of this.countries) {
-      console.log(country.name)
       yield* country;
     }
   }
@@ -143,14 +136,24 @@ class Europe {
 }
 
 class Country {
-  #gen
+  #gen;
 
-  constructor(name, years, taxes, expenses, debts, coordinate_factor, debt_configurator, color, geometry) {
+  constructor(
+    name,
+    years,
+    taxes,
+    expenses,
+    debts,
+    coordinate_factor,
+    debt_configurator,
+    color,
+    geometry
+  ) {
     this.name = name;
     this.years = years;
     this.taxes = taxes;
-    this.debts = debts;
     this.expenses = expenses;
+    this.debts = debts;
     this.color = color;
     this.geometry = geometry;
     this.coordinate_factor = coordinate_factor;
@@ -160,20 +163,43 @@ class Country {
   }
 
   *#iterator() {
-    // spline_points must have at leat 2 points, so we initialise with the
-    // first so that on first iteration of the loop there will be two points
-    // (we assume there is at leat 2 points in data)
-    push();
-    brush.noStroke();
-    this.draw_map();
-    brush.noFill();
-    pop();
-    this.spline_points = [[this.coordinate_factor * this.taxes[0], this.coordinate_factor * this.expenses[0], this.debt_configurator.convert(this.debts[0])]];
-    const len = this.taxes.length;
-    for (let i = 1; i < len; i++) {
-      this.spline_points[i] = [this.coordinate_factor * this.taxes[i], this.coordinate_factor * this.expenses[i], this.debt_configurator.convert(this.debts[i])];
+    map_layer.push();
+    map_layer.stroke(this.color);
+    this.draw_map(map_layer);
+    map_layer.pop();
+
+    this.spline_points = [[
+      this.coordinate_factor * this.taxes[0],
+      this.coordinate_factor * this.expenses[0],
+      this.debt_configurator.convert(this.debts[0])
+    ]];
+
+    for (let i = 1; i < this.taxes.length; i++) {
+      this.spline_points.push([
+        this.coordinate_factor * this.taxes[i],
+        this.coordinate_factor * this.expenses[i],
+        this.debt_configurator.convert(this.debts[i])
+      ]);
       this.display();
-      yield
+      yield;
+    }
+  }
+
+  display() {
+    brush.set("pen", this.color, 0.5);
+    brush.spline(this.spline_points, 0.5);
+    brush.noStroke();
+  }
+
+  draw_map(target) {
+    if (this.geometry.type === "Polygon") {
+      drawPolygon(target, this.geometry.coordinates);
+    }
+
+    if (this.geometry.type === "MultiPolygon") {
+      for (const polygon of this.geometry.coordinates) {
+        drawPolygon(target, polygon);
+      }
     }
   }
 
@@ -184,154 +210,38 @@ class Country {
   [Symbol.iterator]() {
     return this;
   }
+}
 
-  // display() {
-  //   push();
-  //   this.draw_map();
-  //   brush.noFill();
-  //   brush.set("2B", this.color, 0.5);
-  //   brush.spline(this.spline_points, 0.5);
-  //   brush.noStroke();
-  //   pop();
-  // }
-
-
-  display() {
-    // --- MAP (fill) ---
-
-    // --- SPLINE (stroke) ---
-    brush.set("pen", this.color, 0.5);
-    brush.spline(this.spline_points, 0.5);
-    brush.noStroke();
-  }
-
-  draw_map() {
-    console.log(this.geometry)
-    if (this.geometry.type === "Polygon") {
-      drawPolygon(this.geometry.coordinates, this.color);
+function drawPolygon(graphicsContext, polygon) {
+  for (const ring of polygon) {
+    graphicsContext.beginShape();
+    for (const [lon, lat] of ring) {
+      const projectedPoint = project(lon, lat);
+      graphicsContext.vertex(projectedPoint.x, projectedPoint.y);
     }
-
-    if (this.geometry.type === "MultiPolygon") {
-      for (const polygon of this.geometry.coordinates) {
-        drawPolygon(polygon, this.color);
-      }
-    }
+    graphicsContext.endShape();
   }
+}
 
+function project(lon, lat) {
+  return {
+    x: map(lon, -25, 45, 40, MAP_WIDTH - 40),
+    y: map(lat, 72, 34, 40, MAP_HEIGHT - 40)
+  };
 }
 
 function compute_coordinates_factor(stats) {
-  const tax = stats["impot"];
-  const expense = stats["dépense"];
-  return (CANVAS_SIZE - 10) / max(tax[1], expense[1]);
+  return (CANVAS_SIZE - 10) /
+    max(stats.impot[1], stats.dépense[1]);
 }
 
 class DebtConfigurator {
   constructor(stats) {
-    this.min = stats["dette"][0];
-    this.max = stats["dette"][1];
+    this.min = stats.dette[0];
+    this.max = stats.dette[1];
     this.diff = this.max - this.min;
   }
   convert(value) {
     return 0.2 + 2 * ((value - this.min) / this.diff);
   }
 }
-
-/* =========================
-   POLYGON (rings)
-   ========================= */
-
-function drawPolygon(polygon, color) {
-  brush.set("pen", color);
-  brush.strokeWeight(0.8);
-  for (const ring of polygon) {
-    brush.beginStroke("segments");
-    for (let i = 1; i < ring.length; i++) {
-      const a = project(ring[i - 1][0], ring[i - 1][1]);
-      const b = project(ring[i][0], ring[i][1]);
-      brush.line(a.x, a.y, b.x, b.y);
-    }
-    brush.endStroke();
-  }
-}
-
-/* =========================
-   PROJECTION (simple Europe)
-   ========================= */
-
-function project(lon, lat) {
-  return {
-    x: map(lon, -25, 45, 40, width - 40),
-    y: map(lat, 72, 34, height - 40, 40)
-  };
-}
-
-// function drawPolygon(polygon, color) {
-//   brush.noStroke();
-//   brush.fill(color);
-//   for (const ring of polygon) {
-//     brush.beginStroke();
-//     for (const [lon, lat] of ring) {
-//       const p = project(lon, lat);
-//       brush.line(p.x, p.y);
-//     }
-//     brush.endStroke();
-//   }
-// }
-//
-// function project(lon, lat) {
-//   const x = map(lon, -25, 45, 0, width);
-//   const y = map(lat, 72, 34, height, 0); // inversion
-//   return createVector(x, y);
-// }
-//
-//
-//
-//
-// function project(lon, lat, w, h) {
-//   // [-11.262923, 35.577542, 33.867139, 70.382178]
-//   // const x = map(lon, -11.262923, 35.577542, 0, w);
-//   // const y = map(lat, 33.867139, -70.382178, 0, h); // inversion Y
-//   const x = map(lon, -11.262923, 33.867139, 0, w);
-//   const y = map(lat, 70.382178, 35.577542, 0, h); // inversion Y
-//   // const y = map(lat, 35.577542, 70.382178, 0, h); // inversion Y
-//   // const x = map(lon, -180, 180, 0, w);
-//   // const y = map(lat, 90, -90, 0, h); // inversion Y
-//   return [x, y];
-// }
-
-// function drawPolygon(coords, color) {
-//   brush.noStroke();
-//   brush.fill(color);
-//   brush.beginShape();
-//
-//   for (const [lon, lat] of coords[0]) {
-//     // console.log("lon " + lon)
-//     // console.log("lat " + lat)
-//     const [x, y] = project(lon, lat, width, height);
-//     // console.log("x " + x)
-//     // console.log("y " + y)
-//     brush.vertex(x, y);
-//   }
-//
-//   brush.endShape(true);
-//   brush.noFill();
-// }
-
-// function drawPolygon(coords, color) {
-//   const ring = coords?.[0];
-//   if (!ring || ring.length < 3) return; // certains multipolygones contiennent de petits anneaux
-//
-//   brush.noStroke();
-//   brush.fill(color, 180);   // <- alpha explicite [1](https://p5-brush.cargo.site/example-2-the-happy-grid)[2](https://github.com/acamposuribe/p5.brush/blob/main/README.md)
-//   brush.beginShape();
-//
-//   for (const c of ring) {
-//     const lon = c[0], lat = c[1];
-//     const [x, y] = project(lon, lat, width, height);
-//     brush.vertex(x, y);
-//   }
-//
-//   brush.endShape(CLOSE);
-//   brush.noFill();           // reset fill (évite les fuites d’état)
-// }
