@@ -86,7 +86,11 @@ function get_country_geometry(geojson, code) {
 
 function draw() {
   orient_axes();
-  dataset.next();
+  const result = dataset.next();
+  if (result.done) {
+    console.log("Rendering complete")
+    noLoop();
+  }
 }
 
 function mouseClicked() {
