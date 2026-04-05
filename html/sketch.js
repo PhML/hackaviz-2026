@@ -4,15 +4,21 @@ const DATA_URL = "./data/without-lux.json";
 // const DATA_URL = "./data/aggregated-data.json";
 const GEO_URL = "./data/carte.json";
 
-let dataset = null;
-let animationIsStopped = false;
-let geojson = null;
-
 const CANVAS_SIZE = 1000;
 const MAP_WIDTH = 900;
 const MAP_HEIGHT = 700;
 
-let map_layer = null;
+const LON_MIN = -25;
+const LON_MAX = 45;
+const LAT_MIN = 34;
+const LAT_MAX = 72;
+const MARGIN = 40;
+
+const RENDER_SEED = 123456;
+
+let dataset = null;
+let animationIsStopped = false;
+let geojson = null;
 
 const palette = [
   "#2c695a", "#cf022b", "#4e93cc", "#b07a00", "#2a1449",
@@ -21,14 +27,12 @@ const palette = [
 ];
 
 async function setup() {
-  const p5Canvas = createCanvas(CANVAS_SIZE, CANVAS_SIZE, WEBGL);
-  p5Canvas.id("main");
+  const canvas = createCanvas(CANVAS_SIZE, CANVAS_SIZE, WEBGL);
+  canvas.id("main");
   adjustCanvas("main");
 
-  map_layer = createGraphics(MAP_WIDTH, MAP_HEIGHT);
-  map_layer.pixelDensity(1);
-  map_layer.noFill();
-  map_layer.strokeWeight(0.8);
+  randomSeed(RENDER_SEED);
+  noiseSeed(RENDER_SEED);
 
   geojson = await loadJSON(GEO_URL);
   await loadJSON(DATA_URL, loadData);
@@ -43,8 +47,8 @@ async function setup() {
 function loadData(data) {
   dataset = new Europe();
 
-  const coordinate_factor = compute_coordinates_factor(data.stats);
-  const debt_configurator = new DebtConfigurator(data.stats);
+  const coordinateFactor = compute_coordinates_factor(data.stats);
+  const debtConfigurator = new DebtConfigurator(data.stats);
 
   let colorIndex = 0;
 
@@ -61,8 +65,8 @@ function loadData(data) {
         value.Impôt,
         value.Dépense,
         value.Dette,
-        coordinate_factor,
-        debt_configurator,
+        coordinateFactor,
+        debtConfigurator,
         palette[colorIndex],
         geometry
       )
@@ -81,9 +85,6 @@ function get_country_geometry(geojson, code) {
 }
 
 function draw() {
-  resetMatrix();
-  translate(-width / 2, -height / 2);
-  image(map_layer, 0, 0);
   orient_axes();
   dataset.next();
 }
@@ -91,6 +92,13 @@ function draw() {
 function mouseClicked() {
   animationIsStopped ? loop() : noLoop();
   animationIsStopped = !animationIsStopped;
+}
+
+function keyPressed() {
+  if (key === "r" || key === "R") {
+    const newSeed = Math.floor(Math.random() * 1e9);
+    console.log("New seed:", newSeed);
+  }
 }
 
 function adjustCanvas(id) {
@@ -109,11 +117,11 @@ function orient_axes() {
 }
 
 class Europe {
-  #gen;
+  #generator;
 
   constructor() {
     this.countries = [];
-    this.#gen = this.#iterator();
+    this.#generator = this.#iterator();
   }
 
   add_country(country) {
@@ -127,7 +135,7 @@ class Europe {
   }
 
   next() {
-    return this.#gen.next();
+    return this.#generator.next();
   }
 
   [Symbol.iterator]() {
@@ -136,7 +144,7 @@ class Europe {
 }
 
 class Country {
-  #gen;
+  #generator;
 
   constructor(
     name,
@@ -144,8 +152,8 @@ class Country {
     taxes,
     expenses,
     debts,
-    coordinate_factor,
-    debt_configurator,
+    coordinateFactor,
+    debtConfigurator,
     color,
     geometry
   ) {
@@ -156,29 +164,40 @@ class Country {
     this.debts = debts;
     this.color = color;
     this.geometry = geometry;
-    this.coordinate_factor = coordinate_factor;
-    this.debt_configurator = debt_configurator;
-    this.spline_points = [];
-    this.#gen = this.#iterator();
+    this.coordinateFactor = coordinateFactor;
+    this.debtConfigurator = debtConfigurator;
+    this.splinePoints = [];
+    this.#generator = this.#iterator();
   }
 
   *#iterator() {
-    map_layer.push();
-    map_layer.stroke(this.color);
-    this.draw_map(map_layer);
-    map_layer.pop();
+    resetMatrix();
+    translate(-width / 2, -height / 2);
 
-    this.spline_points = [[
-      this.coordinate_factor * this.taxes[0],
-      this.coordinate_factor * this.expenses[0],
-      this.debt_configurator.convert(this.debts[0])
+    brush.noStroke();
+    brush.fillBleed(0.6, "out");
+    brush.fillTexture(0.6, 0.4, false);
+    brush.fill(this.color, 220);
+
+    drawGeometryFill(this.geometry);
+
+    brush.noFill();
+    brush.set("HB", this.color, 1);
+    brush.strokeWeight(0.8);
+
+    drawGeometryStroke(this.geometry);
+
+    this.splinePoints = [[
+      this.coordinateFactor * this.taxes[0],
+      this.coordinateFactor * this.expenses[0],
+      this.debtConfigurator.convert(this.debts[0])
     ]];
 
     for (let i = 1; i < this.taxes.length; i++) {
-      this.spline_points.push([
-        this.coordinate_factor * this.taxes[i],
-        this.coordinate_factor * this.expenses[i],
-        this.debt_configurator.convert(this.debts[i])
+      this.splinePoints.push([
+        this.coordinateFactor * this.taxes[i],
+        this.coordinateFactor * this.expenses[i],
+        this.debtConfigurator.convert(this.debts[i])
       ]);
       this.display();
       yield;
@@ -187,24 +206,12 @@ class Country {
 
   display() {
     brush.set("pen", this.color, 0.5);
-    brush.spline(this.spline_points, 0.5);
+    brush.spline(this.splinePoints, 0.5);
     brush.noStroke();
   }
 
-  draw_map(target) {
-    if (this.geometry.type === "Polygon") {
-      drawPolygon(target, this.geometry.coordinates);
-    }
-
-    if (this.geometry.type === "MultiPolygon") {
-      for (const polygon of this.geometry.coordinates) {
-        drawPolygon(target, polygon);
-      }
-    }
-  }
-
   next() {
-    return this.#gen.next();
+    return this.#generator.next();
   }
 
   [Symbol.iterator]() {
@@ -212,21 +219,61 @@ class Country {
   }
 }
 
-function drawPolygon(graphicsContext, polygon) {
-  for (const ring of polygon) {
-    graphicsContext.beginShape();
-    for (const [lon, lat] of ring) {
-      const projectedPoint = project(lon, lat);
-      graphicsContext.vertex(projectedPoint.x, projectedPoint.y);
+function drawGeometryFill(geometry) {
+  if (!geometry) return;
+
+  if (geometry.type === "Polygon") {
+    drawPolygonFill(geometry.coordinates);
+  } else if (geometry.type === "MultiPolygon") {
+    for (const polygon of geometry.coordinates) {
+      drawPolygonFill(polygon);
     }
-    graphicsContext.endShape();
+  }
+}
+
+function drawPolygonFill(polygon) {
+  if (!polygon || polygon.length === 0) return;
+
+  const outerRing = polygon[0];
+
+  brush.beginShape();
+  for (const [lon, lat] of outerRing) {
+    const projectedPoint = project(lon, lat);
+    brush.vertex(projectedPoint.x, projectedPoint.y);
+  }
+  brush.endShape();
+}
+
+function drawGeometryStroke(geometry) {
+  if (!geometry) return;
+
+  if (geometry.type === "Polygon") {
+    drawPolygonStroke(geometry.coordinates);
+  } else if (geometry.type === "MultiPolygon") {
+    for (const polygon of geometry.coordinates) {
+      drawPolygonStroke(polygon);
+    }
+  }
+}
+
+function drawPolygonStroke(polygon) {
+  if (!polygon) return;
+
+  for (const ring of polygon) {
+    brush.beginStroke("segments");
+    for (let i = 1; i < ring.length; i++) {
+      const start = project(ring[i - 1][0], ring[i - 1][1]);
+      const end = project(ring[i][0], ring[i][1]);
+      brush.line(start.x, start.y, end.x, end.y);
+    }
+    brush.endStroke();
   }
 }
 
 function project(lon, lat) {
   return {
-    x: map(lon, -25, 45, 40, MAP_WIDTH - 40),
-    y: map(lat, 72, 34, 40, MAP_HEIGHT - 40)
+    x: map(lon, LON_MIN, LON_MAX, MARGIN, MAP_WIDTH - MARGIN),
+    y: map(lat, LAT_MAX, LAT_MIN, MARGIN, MAP_HEIGHT - MARGIN)
   };
 }
 
@@ -241,6 +288,7 @@ class DebtConfigurator {
     this.max = stats.dette[1];
     this.diff = this.max - this.min;
   }
+
   convert(value) {
     return 0.2 + 2 * ((value - this.min) / this.diff);
   }
