@@ -16,8 +16,12 @@ const MARGIN = 40;
 
 const RENDER_SEED = 123456;
 
+let cursiveFont;
+let cursiveTextSize = 20;
+
 let dataset = null;
 let animationIsStopped = false;
+let introVisible = true;
 let geojson = null;
 
 const palette = [
@@ -30,6 +34,10 @@ async function setup() {
   const canvas = createCanvas(CANVAS_SIZE, CANVAS_SIZE, WEBGL);
   canvas.id("main");
   adjustCanvas("main");
+
+  cursiveFont = await loadFont(
+    "https://fonts.googleapis.com/css2?family=Meow+Script&display=swap"
+  );
 
   randomSeed(RENDER_SEED);
   noiseSeed(RENDER_SEED);
@@ -84,8 +92,33 @@ function get_country_geometry(geojson, code) {
   return feature.geometry;
 }
 
+function intro() {
+  push();
+  textFont(cursiveFont);
+  textSize(cursiveTextSize);
+  fill(0);
+  textAlign(CENTER, CENTER);
+  textWrap(WORD);
+  rectMode(CENTER);
+  let s = `
+    L’animation que vous allez voir montre l’évolution de la dépense par habitant en fonction de l’impôt par habitant des pays de l’Europe.
+
+    L’épaisseur des traits est porportionnelle à la dette par habitant.
+
+    Cliquez pour démarrer l’animation.
+
+    (un clic durant l’animation la mettera sur pose jusqu’au prochain clic)
+  `
+  text(s, 0, 0, 300, 600);
+  pop();
+}
+
 function draw() {
   background("#fffceb");
+  if (introVisible) {
+    intro();
+    return
+  }
   const result = dataset.next();
   if (!result.done) {
     dataset.drawAllBorders();
@@ -102,6 +135,11 @@ function draw() {
 }
 
 function mouseClicked() {
+  if (introVisible) {
+    introVisible = false;
+    loop();
+    return;
+  }
   animationIsStopped ? loop() : noLoop();
   animationIsStopped = !animationIsStopped;
 }
