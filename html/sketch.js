@@ -88,6 +88,7 @@ function draw() {
   orient_axes();
   const result = dataset.next();
   if (result.done) {
+    dataset.display();
     console.log("Rendering complete");
     noLoop();
   }
@@ -145,6 +146,12 @@ class Europe {
 
   [Symbol.iterator]() {
     return this;
+  }
+
+  display() {
+    for (const country of this.countries) {
+      country.display();
+    }
   }
 }
 
