@@ -85,10 +85,14 @@ function get_country_geometry(geojson, code) {
 }
 
 function draw() {
-  const result = dataset.next();
   background("#fffceb");
+  const result = dataset.next();
   if (!result.done) {
     dataset.drawAllBorders();
+
+    if (dataset.currentCountry) {
+      dataset.currentCountry.display();
+    }
     orient_axes();
   } else {
     dataset.display();
@@ -129,6 +133,7 @@ class Europe {
 
   constructor() {
     this.countries = [];
+    this.currentCountry = null;
     this.#generator = this.#iterator();
   }
 
@@ -139,8 +144,10 @@ class Europe {
   *#iterator() {
     for (const country of this.countries) {
       background("#fffceb");
+      this.currentCountry = country;
       yield* country;
     }
+    this.currentCountry = null;
   }
 
   next() {
