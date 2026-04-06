@@ -41,7 +41,7 @@ async function setup() {
   brush.scaleBrushes(3.5);
 
   background("#fffceb");
-  frameRate(3);
+  frameRate(6);
 }
 
 function loadData(data) {
@@ -134,6 +134,7 @@ class Europe {
 
   *#iterator() {
     for (const country of this.countries) {
+      background("#fffceb");
       yield* country;
     }
   }
@@ -175,22 +176,6 @@ class Country {
   }
 
   *#iterator() {
-    resetMatrix();
-    translate(-width / 2, -height / 2);
-
-    brush.noStroke();
-    brush.fillBleed(0.6, "out");
-    brush.fillTexture(0.6, 0.4, false);
-    brush.fill(this.color, 220);
-
-    drawGeometryFill(this.geometry);
-
-    brush.noFill();
-    brush.set("HB", this.color, 1);
-    brush.strokeWeight(0.8);
-
-    drawGeometryStroke(this.geometry);
-
     this.splinePoints = [[
       this.coordinateFactor * this.taxes[0],
       this.coordinateFactor * this.expenses[0],
@@ -203,12 +188,17 @@ class Country {
         this.coordinateFactor * this.expenses[i],
         this.debtConfigurator.convert(this.debts[i])
       ]);
+      background("#fffceb");
       this.display();
       yield;
     }
   }
 
   display() {
+    drawGeometryFill(this.geometry, this.color);
+    drawGeometryStroke(this.geometry, this.color);
+
+    orient_axes();
     brush.set("pen", this.color, 0.5);
     brush.spline(this.splinePoints, 0.5);
     brush.noStroke();
@@ -223,7 +213,14 @@ class Country {
   }
 }
 
-function drawGeometryFill(geometry) {
+function drawGeometryFill(geometry, color) {
+  resetMatrix();
+  translate(-width / 2, -height / 2);
+
+  brush.noStroke();
+  brush.fillBleed(0.6, "out");
+  brush.fillTexture(0.6, 0.4, false);
+  brush.fill(color, 220);
   if (!geometry) return;
 
   if (geometry.type === "Polygon") {
@@ -233,6 +230,7 @@ function drawGeometryFill(geometry) {
       drawPolygonFill(polygon);
     }
   }
+  brush.noFill();
 }
 
 function drawPolygonFill(polygon) {
@@ -248,8 +246,11 @@ function drawPolygonFill(polygon) {
   brush.endShape();
 }
 
-function drawGeometryStroke(geometry) {
+function drawGeometryStroke(geometry, color) {
   if (!geometry) return;
+
+  brush.set("HB", color, 1);
+  brush.strokeWeight(0.8);
 
   if (geometry.type === "Polygon") {
     drawPolygonStroke(geometry.coordinates);
