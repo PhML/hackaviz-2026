@@ -88,7 +88,7 @@ function draw() {
   orient_axes();
   const result = dataset.next();
   if (result.done) {
-    console.log("Rendering complete")
+    console.log("Rendering complete");
     noLoop();
   }
 }
@@ -172,7 +172,16 @@ class Country {
     this.coordinateFactor = coordinateFactor;
     this.debtConfigurator = debtConfigurator;
     this.splinePoints = [];
+    this.renderSeed = this.compute_render_seed();
     this.#generator = this.#iterator();
+  }
+
+  compute_render_seed() {
+    let hash = 0;
+    for (let i = 0; i < this.name.length; i++) {
+      hash = (hash * 31 + this.name.charCodeAt(i)) | 0;
+    }
+    return hash >>> 0;
   }
 
   *#iterator() {
@@ -195,6 +204,9 @@ class Country {
   }
 
   display() {
+    randomSeed(this.renderSeed);
+    noiseSeed(this.renderSeed);
+
     drawGeometryFill(this.geometry, this.color);
     drawGeometryStroke(this.geometry, this.color);
 
@@ -221,6 +233,7 @@ function drawGeometryFill(geometry, color) {
   brush.fillBleed(0.6, "out");
   brush.fillTexture(0.6, 0.4, false);
   brush.fill(color, 220);
+
   if (!geometry) return;
 
   if (geometry.type === "Polygon") {
