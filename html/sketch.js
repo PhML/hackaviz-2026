@@ -85,6 +85,8 @@ function get_country_geometry(geojson, code) {
 }
 
 function draw() {
+  background("#fffceb");
+  dataset.drawAllBorders();
   orient_axes();
   const result = dataset.next();
   if (result.done) {
@@ -154,6 +156,16 @@ class Europe {
       country.display();
     }
   }
+
+  drawAllBorders() {
+    randomSeed(RENDER_SEED);
+    noiseSeed(RENDER_SEED);
+
+    for (const country of this.countries) {
+      drawGeometryStroke(country.geometry, "#000000");
+    }
+    brush.noStroke();
+  }
 }
 
 class Country {
@@ -207,11 +219,11 @@ class Country {
       ]);
       background("#fffceb");
       this.display();
-      push();
+
       brush.set("pen", this.color, 1);
       const [x, y] = this.splinePoints.at(-1);
       brush.circle(x, y, 8);
-      pop()
+
       yield;
     }
   }
@@ -227,7 +239,6 @@ class Country {
     brush.set("pen", this.color, 0.5);
     brush.spline(this.splinePoints, 0.5);
     brush.noStroke();
-
   }
 
   next() {
@@ -275,6 +286,9 @@ function drawPolygonFill(polygon) {
 
 function drawGeometryStroke(geometry, color) {
   if (!geometry) return;
+
+  resetMatrix();
+  translate(-width / 2, -height / 2);
 
   brush.set("HB", color, 1);
   brush.strokeWeight(0.8);
