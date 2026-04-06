@@ -85,12 +85,12 @@ function get_country_geometry(geojson, code) {
 }
 
 function draw() {
-  background("#fffceb");
-  dataset.drawAllBorders();
-  orient_axes();
   const result = dataset.next();
-  if (result.done) {
-    background("#fffceb");
+  background("#fffceb");
+  if (!result.done) {
+    dataset.drawAllBorders();
+    orient_axes();
+  } else {
     dataset.display();
     console.log("Rendering complete");
     noLoop();
