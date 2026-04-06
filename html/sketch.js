@@ -269,6 +269,21 @@ class Country {
       const [x, y] = this.splinePoints.at(-1);
       brush.circle(x, y, 8);
 
+
+      push();
+      resetMatrix();
+      translate(-width / 2, -height / 2);
+
+      textFont(cursiveFont);
+      textSize(20);
+      fill(0);
+      textAlign(CENTER, CENTER);
+
+      text(this.years[i], x, height - y - 25);
+      textSize(60);
+      text(this.name, width - 180, height - 60);
+      textSize(cursiveTextSize);
+      pop();
       yield;
     }
   }
