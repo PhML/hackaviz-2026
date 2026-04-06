@@ -88,6 +88,7 @@ function draw() {
   orient_axes();
   const result = dataset.next();
   if (result.done) {
+    background("#fffceb");
     dataset.display();
     console.log("Rendering complete");
     noLoop();
@@ -206,6 +207,11 @@ class Country {
       ]);
       background("#fffceb");
       this.display();
+      push();
+      brush.set("pen", this.color, 1);
+      const [x, y] = this.splinePoints.at(-1);
+      brush.circle(x, y, 8);
+      pop()
       yield;
     }
   }
@@ -221,6 +227,7 @@ class Country {
     brush.set("pen", this.color, 0.5);
     brush.spline(this.splinePoints, 0.5);
     brush.noStroke();
+
   }
 
   next() {
@@ -315,6 +322,6 @@ class DebtConfigurator {
   }
 
   convert(value) {
-    return 0.2 + 2 * ((value - this.min) / this.diff);
+    return 0.3 + 3 * ((value - this.min) / this.diff);
   }
 }
